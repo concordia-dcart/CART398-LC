@@ -1,0 +1,3625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title></title>
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="css/slides-extended.css" />
+    <link rel="stylesheet" href="dist/theme/night.css" id="theme" />
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css" />
+    <link rel="stylesheet" href="plugin/customcontrols/style.css">
+
+
+    <link rel="stylesheet" href="css/398-lc.css" />
+
+    <script defer src="dist/fontawesome/all.min.js"></script>
+
+    <script type="text/javascript">
+        function pageInIframe() {
+            return (window.location !== window.parent.location);
+        }
+
+        let forgetPop = true;
+        function onPopState(event) {
+            if(forgetPop){
+                forgetPop = false;
+            } else if( pageInIframe()) {
+                parent.postMessage(event.target.location.href, "app://obsidian.md");
+            }
+        }
+        window.onpopstate = onPopState;
+        window.onmessage = event => {
+            if(event.data == "reload"){
+                window.document.location.reload();
+            }
+            forgetPop = true;
+        }
+
+        function fitElements() {
+            const itemsToFit = document.getElementsByClassName('fitText');
+            for (const item in itemsToFit) {
+                if (Object.hasOwnProperty.call(itemsToFit, item)) {
+                    const element = itemsToFit[item];
+                    fitElement(element, 1, 1000);
+                    element.classList.remove('fitText');
+                }
+            }
+        }
+
+        function fitElement(element, start, end) {
+
+            let size = (end + start) / 2;
+            element.style.fontSize = `${size}px`;
+
+            if (Math.abs(start - end) < 1) {
+                while (element.scrollHeight > element.offsetHeight) {
+                    size--;
+                    element.style.fontSize = `${size}px`;
+                }
+                return;
+            }
+
+            if (element.scrollHeight > element.offsetHeight) {
+                fitElement(element, start, size);
+            } else {
+                fitElement(element, size, end);
+            }
+        }
+
+        document.onreadystatechange = () => {
+            fitElements();
+            if (document.readyState === 'complete') {
+                if (pageInIframe() && window.location.href.indexOf("?export") != -1){
+                    parent.postMessage(event.target.location.href, "app://obsidian.md");
+                }
+                if (window.location.href.indexOf("print-pdf") != -1){
+                    let stateCheck = setInterval(() => {
+                        clearInterval(stateCheck);
+                        window.print();
+                    }, 250);
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides"><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="1.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.25" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; font-size: 50%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+</div>
+
+
+
+
+
+
+
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+
+
+
+  #### CART 398 Special topics in Computation Arts
+  # Live coding: _Code as performance_
+
+  ### Prof. Gabriel Vigliensoni
+
+<br><br>
+
+
+  ##### Winter 2026 - Class 01
+  
+  ##### Department of Design and Computation Arts
+  
+  ##### Concordia University
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    <div class="block">
+
+<iframe width="800" height="400" src="https://www.youtube.com/embed/zUoZvkZ3J7Q?start=7805" title="Gabrielle@(Algo|Afro) Futures. Birmingham, UK" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+###### φ @ (Algo|Afro) Futures. Birmingham, UK. 2023.
+
+</div>
+
+
+
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div>
+
+<aside class="notes"><p><strong>(Algo|Afro)futures is an annual mentoring programme for early career Black artists who want to explore the creative potential of Live Coding.</strong></p>
+</aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    <div class="block">
+
+<iframe width="800" height="400" src="https://www.youtube.com/embed/glr2JFtjEH4?start=394" title="Bad Circulation&Joana Chicau@Corsica Studios. London, UK" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+###### Bad Circulation & Joana Chicau @ Corsica Studios. London, UK. 2022.
+
+</div>
+
+
+
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    <div class="block">
+
+<iframe width="800" height="400" src="https://www.youtube.com/embed/Jvs7Q4cdLy4" title="Gabrielle@(Algo|Afro) Futures. Birmingham, UK" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+###### yaxu & olivia @ Algorithmic Pattern Live Stream. 2022.
+
+</div>
+
+
+
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+# What is Live Coding?
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+## What is Live Coding?
+
+No canonical definition.
+
+Live coding is a performative practice where artists, musicians, and programmers <mark style="background: #FF5582A6;">use code to create live media</mark>. 
+
+Any form of programming where you can <mark>modify the code as the same time the program is running</mark>.
+
+Live coding is a <mark style="background: #698BD0;">technique rather than a genre</mark>. It has been applied to craft noise music, choreography, live cinema, and many other time-based artforms.
+
+Way of creating and enjoying computer music/art by <mark>improvising with code live</mark>.
+
+A group of researchers called TOPLAP wrote the *Generative Manifesto* in 2000, and an [influential manifesto](https://toplap.org/wiki/ManifestoDraft)  in 2004.
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; font-size: 50%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<div class="block">
+
+<img src="https://media.vigliensoni.com/clips/CART398-LC/C01/generative-manifesto.png" alt="Generative Manifesto" style="object-fit: scale-down">
+
+###### The Generative Manifesto (2000) by Ade Ward and Alex McLean
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+notes: **The Generative Manifesto**  
+[Ade Ward](https://en.wikipedia.org/wiki/Adrian_Ward_\(artist\)) and Alex McLean ([Slub](http://slub.org/))  
+Presented at the Institute for Contemporary Arts, 23rd August 2000
+
+1. Attention to detail – that only hand made generative music can allow (code allows you to go deeper into creative structures)
+2. Realtime output and compositional control – we hate to wait (it is inconceivable to expect non-realtime systems to exhibit signs of life)
+3. Construct and explore new sonic environments with echoes from our own. (art reflects human narrative, code reflects human activity)
+4. Open process, open minds – we have nothing to hide (code is unambiguous, it can never hide behind obscurity. We seek to abolish obscurity in the arts)
+5. Only use software applications written by ourselves – software dictates output, we dictate software (authorship cannot be granted to those who have not authored!)
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+
+## [TOPLAP manifesto](https://toplap.org/wiki/ManifestoDraft) 
+
+We demand:
+
+- Give us <mark style="background: #698BD0;">access to the performer's mind</mark>, to the whole human instrument.
+- Obscurantism is dangerous. <mark>Show us your screens.</mark>
+- Programs are instruments that can change themselves
+- The program is to be transcended—Artificial language is the way.
+- <mark>Code should be seen as well as heard</mark>, underlying algorithms viewed as well as their visual outcome.
+- <mark style="background: #FF5582A6;">Live coding is not about tools</mark>. Algorithms are thoughts. Chainsaws are tools. That's why algorithms are sometimes harder to notice than chainsaws.
+- It is <mark style="background: #698BD0;">not necessary for a lay audience to understand the code to appreciate it</mark>, much as it is not necessary to know how to play guitar in order to appreciate watching a guitar performance.
+- ... <mark>why repeat the past?</mark> No doubt the writing of code and expression of thought will develop its own nuances and customs.
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+
+
+<img src="https://media.vigliensoni.com/clips/CART398-LC/vince-clark.jpg" alt="Vince Clark" style="object-fit: scale-down">
+
+
+###### Vince Clark. [Image taken from Wikipedia.](https://upload.wikimedia.org/wikipedia/commons/f/f6/Vince_Clarke_2011.jpg)
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+<img src="https://media.vigliensoni.com/clips/CART398-LC/kraftwerk-02.jpg" alt="Vince Clark" style="object-fit: scale-down">
+
+###### Kraftwerk in Ferrara 2005. [Image taken from Wikipedia.](https://upload.wikimedia.org/wikipedia/commons/8/85/Kraftwerk_live_in_Ferrara_2005_%281%29.JPG)
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## Conditions that make live coding plausible
+
+Computer-based music since the 1980s.  
+
+Digital culture in art schools around the mid-1990s.  
+
+Wider cultural interest in creative coding since the turn of the millennium.
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+### Live coding timeline (1999 → 2026)
+
+
+<div class="mermaid">
+timeline
+    1999 : AutoShop (Adrian Ward)
+    2000 : “The Generative Manifesto” performed at ICA London (Sept 2000)
+    2000 : “Live coding” emerges as a label (early 2000s)
+    2002-2005 : Read_me / Runme festivals (Moscow, Helsinki, Aarhus, Dortmund)
+    2004 : Changing Grammars symposium; TOPLAP founded; manifesto drafting
+    2013 : Schloss Dagstuhl live coding meeting (art/education/engineering)
+    2013 : Algorave public uptake (media coverage + events)
+    2015-2021 : ICLC (Leeds; Hamilton; Morelia; Madrid; Limerick; Valdivia)
+    2023 : ICLC Utrecht
+    2024 : ICLC NYU Shanghai
+    2025 : ICLC Barcelona
+    2026 : ICLC 10th edition planned (host call)
+        
+
+</div>
+ 
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+# Resources
+
+- [TOPLAP](https://blog.toplap.org/): “The home of live coding”
+- Many [TOPLAP nodes/collectives](https://blog.toplap.org/nodes/)
+- [Awesome Live Coding](https://github.com/toplap/awesome-livecoding)
+- [Live Coding: A User's Manual](https://livecodingbook.toplap.org/) (MIT press, open access!)
+- [Discord](https://discord.gg/D4Enr5u7Rp)
+- [List of languages](https://github.com/toplap/awesome-livecoding?tab=readme-ov-file#languages)
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+# [Course outline](https://moodle.concordia.ca/moodle/course/view.php?id=180120)
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Term plan
+
+
+
+<div class="mermaid">
+
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "timelineSectionBackground": "#1e1e1e",
+    "timelineSectionTextColor": "#ffffff",
+    "timelineItemBackground": "#333333",
+    "timelineItemTextColor": "#ffffff",
+    "fontFamily": "Inter, sans-serif"
+  }
+}}%%
+
+
+timeline
+    title 
+    
+	section Strudel
+    Week 1  : Strudel 
+    Week 2  :  
+    Week 3  :  
+    Week 4  :  Vis Studio
+    Week 5  :  
+    Week 6  :  
+    
+    section Hydra
+    Week 7  : Hydra 
+    Week 8  :  
+    Week 9  :  
+    
+	section Text + Web
+    Week 10 : Text + Web 
+    
+	section Performance
+    Week 11 : Dress rehearsal (Vis Studio)
+    Week 12 : Final performance (Vis Studio)
+
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## Evaluation
+
+Assessment is <mark>practice-based and cumulative</mark>, emphasizing consistency, public iteration, and performance readiness.
+
+**Attendance, in-class work, and participation**  
+Students will record attendance each class, and participate on hands-on exercises, collaborative work, and short in-class showings at the end of each session.
+
+**Homework: One-patch-a-day**  
+You will commit one patch a day between classes. These will focus on incremental development of a live practice.
+
+**Final performance**  
+A public live-coding performance synthesizing sound, visuals, and interaction techniques developed during the term. Evaluation emphasizes coherence, technical reliability, and performative intent rather than polish alone.
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## [Homework: One patch a day](https://moodle.concordia.ca/moodle/mod/assign/view.php?id=4448614)
+
+Use the following repository as a template: 
+
+https://github.com/concordia-dcart/CART398-LC-OPaD
+
+Don't fork, use ”Use this template” to ”Create a new repository”, instead. Make it public.
+
+Add the URL of your repository to the following spreadsheet
+
+[Spreadsheet](https://docs.google.com/spreadsheets/d/1AQA6Kc5pd2JnfIX-sxv50vC-xLsh6W5ABWXyIgsLzG4/edit?usp=drive_link)
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="1.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# Break
+Complete your attendance on Moodle
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## [What is an Uzulang?](https://uzu.lurk.org/)
+
+Family of languages for making music and other media.
+
+Uzulangs tend to be based on <mark>the same model of representing patterns of time</mark>, and feature the <mark style="background: #698BD0;">same or similar 'mini-notation'</mark> for describing sequences (inspired by the [polymetric expressions](https://bolprocessor.org/polymetric-structure/) in the Bol Processor)
+
+_Uzu_ means whirlpool in Japanese. _Strudel_ and _Vortex_ also mean whirlpool, in German and English.
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+A paradigmatic Uzulang is <mark>TidalCycles</mark>, develop by Alex McLean (2010)
+
+<mark>Strudel</mark> is a JS port of TidalCycles, done by Felix Roos and Alex McLean (2023)
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## Time in cycles
+
+
+Uzulanguages don't use BPM (beats per minute), but CPS: cycles per second, or CPM (cycles per minute)
+
+
+
+<img src="https://tidalcycles.org/assets/images/cycle_representation-24efe2cc73b0b5e0ca32a158eed95162.png" alt="Cycles" style="object-fit: scale-down">
+
+###### Image taken from [TidalCycles reference](https://tidalcycles.org/docs/reference/cycles)
+
+
+
+<iframe src="https://strudel.cc/#CnNvdW5kKCJoaCIp" width="100%">
+
+
+notes: sound("casio")
+
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## Mini-notation
+
+
+
+Mini-notation is a compact way to describe repeating patterns (“cycles”), then transform them with functions.
+
+In this example, the mini-notation pattern is written <mark>inside the double quotes</mark>.
+
+The rest are functions applied to the pattern.
+
+
+
+``` haskell
+
+sound("bd [~ rim] mt [lt ht]")
+  .dist(2)
+  .chunk(4, x => x.hurry(2))
+  
+```
+
+How does it sound?
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+# [Strudel REPL](https://strudel.cc)
+</div>
+
+
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+Strudel adopts (largely) the same mini-notation features and syntax as Tidal and other Uzulanguages
+
+In Strudel, you’ll typically place mini-notation inside functions like `sound("...")` or `s("...")`
+
+
+
+<iframe src="https://strudel.cc/#CnNvdW5kKCJiZCBbfiByaW1dIG10IFtsdCBodF0iKQogIC5kaXN0KDIpCiAgLmNodW5rKDQsIHggPT4geC5odXJyeSgyKSk%3D" width="100%" height="70%">
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## REPL: Read–Eval–Print/Play-Loop.
+</div>
+
+
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    <div class="block">
+
+It is friendly jargon for an interactive programming interface from computing heritage, usually for a commandline interface but also applied to live coding editors.
+
+<img src="https://media.vigliensoni.com/clips/CART398-LC/01-repl-01.png" alt="" style="width: 400px; object-fit: fill">
+
+###### Image taken from Roos and McLean 2023. 
+
+</div>
+
+
+
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+## Strudel REPL: minimal starting point
+
+Open it and type:
+
+`s("bd sd")`
+
+You should hear a repeating two-step loop.
+<br><br><br>
+Thta pattern is equivalent to 
+
+`sound("bd sd")`
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Sequences are space-separated
+
+`s("bd sd")`
+
+`s("bd sd cp cp bd bd")`
+
+A mini-notation sequence is one event follows another, in repeating, looping structures.
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+## Cycle-centric time
+
+In this model, a “cycle” is essentially a bar/measure, and the sequence is squeezed to fit one cycle. Adding more events makes the pattern denser (it “goes faster” in the same cycle).
+
+`s("bd sd cp cp")      // 4 events per cycle`
+
+`s("bd sd cp cp rim casio") // 6 events per cycle (denser)`
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Rests with ~
+
+`~` leaves a step empty (a rest).
+
+`s("bd ~ cp ~ rim casio")`
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Subsequences with [ ]
+
+Square brackets create a subsequence that subdivides a step.
+
+`s("jazz [rim jazz] ~ casio")`
+
+Interpretation: still 4 main steps, but the second step is split into two substeps.
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Nested subsequences
+
+You can nest subsequences to any depth.
+
+`s("jazz [rim jazz] ~ [casio casio [casio casio] casio casio casio ~ casio]")`
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Speeding up inside a step with `*n`
+
+`*n` repeats an event within its step (faster inside that step).
+
+`s("bd [rim rim rim] mt lt")`
+
+Equivalent idea:
+
+`s("bd rim*3 mt lt")`
+
+## Slowing down inside a step with `/n`
+
+`/n` slows an event so it only triggers once every _n_ steps (and the event can be “sliced” across cycles).
+
+`s("[bd rim/3 mt lt]")`
+
+`s("[bd rim/3 mt lt]*4")`
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### Changing the duration of cycles with `setcps()`
+
+Default value: 0.5 cps
+
+`setcps(0.5)` // 1 cycle per 2 seconds
+
+`setcps(1)` // 1 cycle per second
+
+`setcps(2)` // 2 cycles per second
+
+Form sometimes convenient: `setcps(130/60/4)` for 130 BPM 
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# Mini-notation exercise
+ Mimic New Order's Blue Monday initial drum pattern using Strudel REPL
+
+
+<iframe width="800" height="400" src="https://www.youtube.com/embed/c1GxjzHm5us" title="New Order - Blue Monday (Official Lyric Video)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## One step per cycle with `< >`
+
+Angle brackets slow a subsequence to one step per cycle.
+
+
+`s("<bd casio rim jazz insect>")`
+
+Conceptually equivalent to:
+
+`s("[bd casio rim jazz insect]/5")`
+
+Quicker
+
+`s("[bd casio rim jazz insect]/5*6")`
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Repeating steps with `!`
+
+`!n` repeats a step as additional steps (different from `*n`, which repeats _within_ a step).
+
+`s("lt ht mt!3")` → `s("lt ht mt mt mt")`
+
+`s("lt ht mt*3")` → `s("lt ht [mt mt mt]")`
+
+Rule of thumb: 
+
+`a*n` repeats *n* times within the step; `b!n` repeats as *n* extra steps.
+
+
+## Elongating steps with `@`
+
+`@n` stretches a step over _n_ steps.
+
+`s("lt ht mt@3")`
+
+For percussive sounds, equivalent to
+
+`s("lt ht mt ~ ~")`
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Now refactor Blue Monday's kick using a simpler mini-notation
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Polyphony: commas layer patterns
+
+In mini-notation, <mark>commas layer sequences</mark> (polyphony).
+
+`s("<[lt ht mt], [rim casio] [rim casio rim]>*2")`
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## `[]` polyrhythm vs `{}` polymetre
+
+Square brackets: cycles align, subsequences repeat at the same rate → polyrhythm. 
+
+Curly brackets: steps align (same step duration), but different loop lengths → polymetre.
+
+`s("[jazz casio rim, hh hh:2]*2")`     // polyrhythm framing
+
+`s("{jazz casio rim, hh hh:2}*2")`     // polymetre framing
+<br><br><br>
+`note("[c d e f g a b c4, c d e f g a b]*2")`      // polyrhythm framing
+
+`note("{c d e f g a b c4, c d e f g a b}*2")`      // polymetre framing
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Grouping with `.`
+
+A period `.` is an alternative grouping syntax: it separates consecutive groupings, equivalent to wrapping each group in `[ ]`.
+
+`s("bd sd cp . hh hh hh hh . sd cp")`
+
+You can mix `.` with `[ ]` when you need nesting.
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## Exploring sounds 
+Append `:` followed by a number to the name, as in `casio:2`
+
+Specify a bank, as in 
+
+`s("bd:6 sd:2 cp ~").bank("RolandTR808")`
+
+
+## Pre-linked sounds
+Open the Strudel REPL right sidebar. Click on sounds → drum-machines
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+
+
+<iframe
+class="embed-full"
+  src="https://strudel.cc/workshop/first-sounds/#first-sounds"
+  style="width:100vw; height:50vh">
+  </iframe>
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## `n` notation to choose sound samples
+`n("0 1 [4 2] 3*2").s("jazz")`
+
+is equivalent to
+
+`s("jazz jazz:1 [jazz:4 jazz:2] jazz:3*2")`
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Exercise 1
+
+- Explore different drum sounds in the Strudel REPL linked drum-machines
+
+- Craft a “One-cycle drum sentence”. Write a pattern in mini-notation (i.e., `sound("...")`) with 8–16 events; add at least one rest; try simplifying it using `[ ... ]`.
+
+- “Tempo invariance”. Convert your sequence to `< ... >*N` so you can add/remove events without changing perceived speed.
+
+- “Timbre swap” . Keep rhythm fixed; change character using `.bank("...")`. 
+
+- “Parallelization”. Turn one linear pattern into 2–3 layers using commas.
+
+notes: 
+
+n("<~ 1 [4 2] 3*2 6 5 [2 4] [3 4 5]!2>*4").sound("jazz")
+
+n("<0 1 [4 2] 3*2 6 5 [2 4] [3 4 5]!2>*4").sound("bd").bank("TR808")
+
+n("<0 1 [5 ~] ~ ~ 5 ~ ~ [6 ~ 3]!2>*4").sound("jazz")
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# Showtime!
+
+One by one go to the following REPL and play with your pattern for one minute
+
+https://flok.cc/s/past-harlequin-alligator-87c2d6c8#
+
+Wait for your turn!
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## [One patch a day](https://moodle.concordia.ca/moodle/mod/assign/view.php?id=4448614) - Always!
+
+Use the following repository as a template: 
+
+https://github.com/concordia-dcart/CART398-LC-OPaD
+
+Don't fork, use ”Use this template” to ”Create a new repository”, instead. Make it public.
+
+Add the URL of your repository to the following spreadsheet
+
+[Spreadsheet](https://docs.google.com/spreadsheets/d/1AQA6Kc5pd2JnfIX-sxv50vC-xLsh6W5ABWXyIgsLzG4/edit?usp=drive_link)
+</div></script></section></div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/obsidian-markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script src="plugin/mermaid/mermaid.js"></script>
+    <script src="plugin/chart/chart.umd.js"></script>
+    <script src="plugin/chart/plugin.js"></script>
+    <script src="plugin/customcontrols/plugin.js"></script>
+
+    <script>
+        function extend() {
+            const target = {};
+            for (let i = 0; i < arguments.length; i++) {
+                const source = arguments[i];
+                for (const key in source) {
+                    if (source.hasOwnProperty(key)) {
+                        target[key] = source[key];
+                    }
+                }
+            }
+            return target;
+        }
+
+        function isLight(color) {
+            let hex = color.replace('#', '');
+
+            // convert #fff => #ffffff
+            if (hex.length == 3) {
+                hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+            }
+
+            const c_r = parseInt(hex.substr(0, 2), 16);
+            const c_g = parseInt(hex.substr(2, 2), 16);
+            const c_b = parseInt(hex.substr(4, 2), 16);
+            const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+            return brightness > 155;
+        }
+
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--r-background-color').trim();
+
+        if (isLight(bgColor)) {
+            document.body.classList.add('has-light-background');
+        } else {
+            document.body.classList.add('has-dark-background');
+        }
+
+        // default options to init reveal.js
+        const defaultOptions = {
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            transition: 'default', // none/fade/slide/convex/concave/zoom
+            plugins: [
+                ObsidianMarkdown,
+                RevealHighlight,
+                RevealZoom,
+                RevealNotes,
+                RevealMath.KaTeX,
+                RevealMermaid,
+                RevealChart,
+                RevealCustomControls,
+            ],
+            allottedTime: "120",
+
+            katex: {
+                local: 'plugin/math/katex',
+                extensions: ["mhchem"],
+            },
+            markdown: {
+                gfm: true,
+            },
+            mermaid: {
+                theme: isLight(bgColor) ? 'default' : 'dark',
+            },
+            customcontrols: {
+                controls: [
+                ]
+            },
+        };
+
+        if ( pageInIframe() ) {
+            defaultOptions.scrollActivationWidth = 5;
+        }
+
+        // options from URL query string
+        const queryOptions = Reveal().getQueryHash() || {};
+
+        const options = extend(defaultOptions, {"controls":true,"progress":true,"slideNumber":true,"center":true,"transition":"fade","transitionSpeed":"default","width":1200,"height":700,"margin":0.04,"controlsLayout":"bottom-right","disableLayout":false,"previewLinks":true}, queryOptions);
+    </script>
+
+    <script>
+      /**
+       * KaTeX Equation Numbering Note
+       * 
+       * KaTeX maintains a global equation counter for \begin{equation} environments.
+       * When navigating between slides, reveal.js math plugin may re-render math, causing 
+       * equation numbers to change randomly.
+       * 
+       * Note: Regular $$ blocks don't have equation numbers - only \begin{equation} does.
+       * 
+       * If you experience issues with equation numbers changing:
+       * Use manual \tag{} commands: \begin{equation}\tag{1} ... \end{equation}
+       */
+      
+      Reveal.initialize(options);
+    </script>
+    <!-- created with Slides Extended reveal.html template -->
+</body>
+</html>
