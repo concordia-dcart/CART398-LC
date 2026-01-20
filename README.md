@@ -5,5 +5,5 @@ Website for CART398 — Live Coding
 
 ## Weeks
 - [Week 01](https://concordia-dcart.github.io/CART398-LC/slides/C01#/). Introduction to Live Coding. Time, cycles, and mini-notation fundamentals.
+- [Week 02](https://concordia-dcart.github.io/CART398-LC/slides/C02#/). Mini-notation extended. Randomization and transformations.
 
-##    
