@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title></title>
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="css/slides-extended.css" />
+    <link rel="stylesheet" href="dist/theme/night.css" id="theme" />
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css" />
+    <link rel="stylesheet" href="plugin/customcontrols/style.css">
+
+
+    <link rel="stylesheet" href="css/398-lc.css" />
+
+    <script defer src="dist/fontawesome/all.min.js"></script>
+
+    <script type="text/javascript">
+        function pageInIframe() {
+            return (window.location !== window.parent.location);
+        }
+
+        let forgetPop = true;
+        function onPopState(event) {
+            if(forgetPop){
+                forgetPop = false;
+            } else if( pageInIframe()) {
+                parent.postMessage(event.target.location.href, "app://obsidian.md");
+            }
+        }
+        window.onpopstate = onPopState;
+        window.onmessage = event => {
+            if(event.data == "reload"){
+                window.document.location.reload();
+            }
+            forgetPop = true;
+        }
+
+        function fitElements() {
+            const itemsToFit = document.getElementsByClassName('fitText');
+            for (const item in itemsToFit) {
+                if (Object.hasOwnProperty.call(itemsToFit, item)) {
+                    const element = itemsToFit[item];
+                    fitElement(element, 1, 1000);
+                    element.classList.remove('fitText');
+                }
+            }
+        }
+
+        function fitElement(element, start, end) {
+
+            let size = (end + start) / 2;
+            element.style.fontSize = `${size}px`;
+
+            if (Math.abs(start - end) < 1) {
+                while (element.scrollHeight > element.offsetHeight) {
+                    size--;
+                    element.style.fontSize = `${size}px`;
+                }
+                return;
+            }
+
+            if (element.scrollHeight > element.offsetHeight) {
+                fitElement(element, start, size);
+            } else {
+                fitElement(element, size, end);
+            }
+        }
+
+        document.onreadystatechange = () => {
+            fitElements();
+            if (document.readyState === 'complete') {
+                if (pageInIframe() && window.location.href.indexOf("?export") != -1){
+                    parent.postMessage(event.target.location.href, "app://obsidian.md");
+                }
+                if (window.location.href.indexOf("print-pdf") != -1){
+                    let stateCheck = setInterval(() => {
+                        clearInterval(stateCheck);
+                        window.print();
+                    }, 250);
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides"><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="1.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.25" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; font-size: 50%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+</div>
+
+
+
+
+
+
+
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+
+
+
+  #### CART 398 Special topics in Computation Arts
+  # Live coding: _Code as performance_
+
+  ### Prof. Gabriel Vigliensoni
+
+<br><br>
+
+
+  ##### Winter 2026 - Class 03
+  
+  ##### Department of Design and Computation Arts
+  
+  ##### Concordia University
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Recap last session
+
+Sound sources: selecting banks and loading external samples
+
+Mini-notation grammar extended
+
+Nesting, `<>` alternation, `?` probability
+
+`$:` and `stack` for multiple patterns running in parallel
+
+Transformations: Euclidean rhythm (`(p,s)` forms and `euclid`, `.struct`, `.mask`, `.every(n, fn)` (and other transformations). 
+
+Tools: Flok REPL for collaborative performances
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## Today's session — *Notes and phrases*
+
+Week 2 patches
+
+Beat exercise
+
+Controlling long samples
+
+Pitched material
+
+ICA
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## coming soon
+
+# [atau tanaka](https://www.youtube.com/watch?v=8T3w9KKeFms) à montréal !
+- [lecture at CIRMMT on Monday, February 2](https://www.cirmmt.org/en/events/distinguished-lectures/tanaka-2-feb-2026)
+- [show on Sunday, February 1 at WCS](https://www.zeffy.com/en-CA/ticketing/atau-tanaka-ludwig-berger-benedicte-john-clarence-prosper)
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Last week's discoveries
+Your favourite patches
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+<!-- .slide: data-auto-animate="true" -->
+
+
+Your favourite patches
+
+<iframe src="https://strudel.cc/#Ci8vIEB0aXRsZSBXMDItc3R1ZGVudC13b3JrCgovLyBVQU5ESEEKCi8vIEB0aXRsZSBXMDQtMDIKLy8gQGxpY2Vuc2UgQ0MgQlktTkMtU0EgNC4wIGh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS1uYy1zYS80LjAvCi8vIEBieSB1YW5kaGEKLy8gQGRhdGUgSmFuIDI1LCAyMDI2CgoKc2FtcGxlcygnZ2l0aHViOnRpZGFsY3ljbGVzL2RpcnQtc2FtcGxlcycpCgpzZXRjcG0oMTIwLzQpCgoKJDogc3RhY2soCiAgICAgICAgIG4oYDxbfiAwXSAyIFswIDJdLCBbfiAyXT4qNGApCiAgICAgICAgIC5zY2FsZSgiQzQ6bWlub3IiKQogICAgICAgICAuc291bmQoImdtX2Nob2lyX2FhaHM6MyAgZ21fY2hvaXJfYWFoczowIikKICAgICAgICAgLmNvbG9yICgiY3lhbiIpCiAgICAgICAgIC5nYWluIChzbGlkZXIoMSkpCiAgICAgICAgIC5kZWxheSgwLjMpLAogICAgICAgICAKICAgICAgICAgIG4oIlt%2BIDBdIDMgPFswIDNdPi8yIFt%2BIDNdIikKICAgICAgICAgLnNjYWxlKCJDMjptaW5vciIpCiAgICAgICAgIC5zb3VuZCgiZ21fY2hvaXJfYWFoczozICBnbV9jaG9pcl9hYWhzOjEiKQogICAgICAgICAuc2xvdygxKQogICAgICAgICAuY29sb3IoInJlZCIpLAoKICAgICAgICBzKCJbaGgqMTY%2FMC41IGJkKjJdPzAuMiIpCiAgICAgICAgLnJvb20oMykKICAgICAgICAuZ2FpbiAoMC4yKSwKICAgICAgICAKICAgICAgICBzKCJbPG1vdXRoOjUgbW91dGg6Mj8%2BIG1vdXRoOjM%2FMC4yIHwgPHBlcmM6IDA%2FMC4yIHBlcmM6MT8wLjY%2BXSo0IikKICAgICAgICAuY29sb3IoImdyZWVuIiksCgogICAgICAgIHMoIltzZWF3b2xmOjU%2FMC4zfHJzOjRdIikKICAgICAgICAucGFuKHNpbmUuc2xvdygzKSkKICAgICAgICAuY29sb3IoIndoaXRlIiksCgogICAgICAgbigiW34gMF0%2FMC4yLzIgMSBbMCAxXT8qNS8zIFt%2BIDE%2FXT8iKQogICAgICAgLnNjYWxlKCJGMjptaW5vciIpCiAgICAgICAucygibmV3bm90ZXM6MSIpCiAgICAgICAucGFuKCI8LjUgMSAuNSAwPiIpCiAgICAgICAuY29sb3IoIm9yYW5nZSIpLAoKICAKKS5waWFub3JvbGwoe3ZlcnRpY2FsOjEsIGF1dG9yYW5nZToxfSkKCgoKCgoKCgoKCgovLyBURVJFTkNFIChJbmRpY2F0ZSB5b3VyIGZhdm9yaXRlISkKCgogLy8gQHRpdGxlIFcwMi0wMwovLyBAbGljZW5zZSBDQyBCWS1OQy1TQSA0LjAgaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8KLy8gQGJ5IFRlcmVuY2UgVGFuZwovLyBAZGF0ZSBKYW4gMjYsIDIwMjYKCi8vIHNldENwcygxNjAvNDAvNikKCi8vIHNhbXBsZXMgKHsKLy8ga25pZmU6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzE4OS8xODkyMDNfMTczNzgyNC1scS5tcDMnLAovLyBrbmlmZTI6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzYxNy82MTc0MTFfMTMyMjIyMzItbHEubXAzJywKLy8gZ2xhc3M6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzIwNC8yMDQxMzVfMjU3MDc0My1scS5tcDMnCgovLyB9KQoKLy8gcygiZ2xhc3MoMSwxMCk%2FIDxnbGFzcygyLCA1KSEyPioyIDxrbmlmZTIga25pZmUoMiwxMCksIFtrbmlmZTo0IGtuaWZlKDIsMyksIGdsYXNzXT4qMiA8IGtuaWZlKDIsMTApIGdsYXNzLCBnbGFzcygyLDEwKSEyPioyIikKLy8gICAuZGlzdG9ydChzaW5lLnJhbmdlKDAuMiwxKSkKLy8gICAvLy5nYWluKDAuNSkKLy8gICAubHBmKDgwMCkKLy8gICAubHBlbnYoc2xpZGVyKDAsMCwxMCkpCi8vICAgLmRlbGF5dGltZSgxLjUpCi8vICAgLmRlZ3JhZGVCeShpcmFuZCgwLjIpKQovLyAgIC5wYW4oIjAuMiAwLjgiKQogIAovLyAuX3B1bmNoY2FyZCgpCgoKCgoKCi8vIC8vIFRBUkEgKENoZWNrIHlvdXIgcGFubmluZyBzZXR0aW5ncyEpCgovLyBzYW1wbGVzKHsKLy8gc3ViMjogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvMzMxLzMzMTQwNV8zMDYzNzg0LWxxLm1wMycsCi8vIHRvbmU6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzc1Ni83NTY1NjhfMTIzMzM4NjQtbHEubXAzJywKLy8gc3RhYjogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNjI1LzYyNTgxMF8xNTQwNzE3LWxxLm1wMycsCi8vIH0pCgovLyBzZXRjcHMoMTIwLzkwLzQpCgovLyBzdGFjazogcygibG93OjIiKS5ldWNsaWQoNSw4KS5vZmYoMS84LCBhZGQoMikpIC5nYWluKDApCgovLyAkOiBzKCJzdWIyOjEiKSAuc2xvdygyKSAuZ2FpbigwLjYpCi8vICQ6IHMoInRvbmU6Mj8wLjMiKS5kZWxheSgiPDAuNSAwLjc1PiIpLnBhbigxKS5nYWluKDAuMjUpCi8vICQ6IHMoInN0YWI6NCoyIikuZGVsYXkoIjwwLjI1IDAuNzU%2BIikucGFuKCI8LTEgMT4iKS5nYWluKDAuMykKCi8vIGQ0OiBzKCJoaDozKjQiKS5nYWluKDAuNSkKCi8vIGQxOiBzKCJiZCg1LDgsMCkiKQovLyBkMjogcygiYmQ6MiIpLmV1Y2xpZCg1LDgpLm9mZigxLzQsIGFkZCg0KSkuZGVsYXkoMCkucGFuKDUpLmdhaW4oMC4yKQovLyBkMzogcygiY3I6NCIpLmV1Y2xpZCg1LDgpLm9mZigxLzQsIGFkZCgwLjIpKS5kZWxheSgzKS5wYW4oNSkuZ2FpbigwLjIpCi8vIGQ0OiBzKCJvaDo2IikuZXVjbGlkKDMsNCkub2ZmKDEvNCwgYWRkKDEwKSkuZGVsYXkoNSkucGFuKDUpLmdhaW4oMC4yKQoKCgoKLy8gLy8gU09QSElFCgoKLy8gLy8gQHRpdGxlIFcwMi0wMQovLyAvLyBAbGljZW5zZSBDQyBCWS1OQy1TQSA0LjAgaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8KLy8gLy8gQGJzb3BoaWUgU2FuY2hlegovLyAvLyBAZGF0ZSBKYW4gMjYsIDIwMjYKCi8vIHNhbXBsZXMoewovLyAgIGNvbjogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNzM1LzczNTYyNF85MjE3MS1ocS5tcDMnCi8vIH0pCgovLyAkOiBzdGFjaygKLy8gICBzKCJjb24iKS5yb29tKDAuMikuc2l6ZSgwLjkpLmRlbGF5ZmVlZGJhY2soMC42KS5nYWluKDAuNCksCi8vICAgcygiYmQgW34gYmQ6MV0gfiBiZCIpLmdhaW4oMC41KS5scGYoNzAwKSwKLy8gICBzKCJ%2BIGNsYXAgfiBbY2xhcCBjbGFwXSIpLmdhaW4oMC42KS5yb29tKDAuMTUpLnBhbigwLjY1KSwKLy8gICBzKCJbamF6ejo4XSIpLmRlbGF5ZmVlZGJhY2soMC45KS5nYWluKDAuODUpLAovLyAgIHMoImJkKjQsIGhoKjgsIGNwIH4gY3AgfiIpLnNwZWVkKCJbMSAxLjJdIikucm9vbSgwLjMpLmdhaW4oMC44KQovLyApCgoKCgoKCgovLyAvLyBTS1lMQSAoV2FpdCBmb3IgdGhlIHN1cnByaXNlISEhKQoKCgovLyAvLyBTS1lMQSdTIFNBTVBMRVMgInRoaXMgaXMgbm90IGNhbGxlZCBsb3ZlLi4uIiAKCi8vIC8vIHNhbXBsZXMgCi8vIHNhbXBsZXMoewovLyAgICAgYnNkcjogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvODQxLzg0MTU0OF8xMzA3NDAyMi1scS5tcDMnLAovLyAgICAgbW9ub2xvZ3VlOiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy8zODcvMzg3MzM1XzI2MDI1NzEtbHEubXAzJwovLyB9KQoKLy8gLy8gdmFyaWFibGVzIAovLyBsZXQgaW50cm9MZW5ndGggPSAyOyAKLy8gc2V0Y3BtKDMwKQoKLy8gLy8gaW50cm8KLy8gJDpzb3VuZCgiZ21fYmlyZF90d2VldCIpLmdhaW4oIjEuMyIpLm1hc2sodGltZS5sdCgxKSkgLy8gY2F0IGNhbGwgOikgCgovLyAvLyBtb25vbG9ndWUgCi8vICQ6IHMoIm1vbm9sb2d1ZSIpLnNsb3coOSkuZGVsYXkoMC4yKS5nYWluKCIxLjQiKS5wYW4oIjEiKS5jb2xvcigicGluayIpLl9zY29wZSgpIAoKLy8gLy8gYmFzc2xpbmUKLy8gJDpzb3VuZCgiPHtic2RyLzMgfiBic2RyIGJzcmQsIH4gW2dtX3BhZF9oYWxvIH5dIH4gW34gZ21fcGFkX2hhbG9dfT4iKS5nYWluKCIwLjMiKS5kaXN0KCIxLjkiKQovLyAgIC5tYXNrKHRpbWUuZ3QoaW50cm9MZW5ndGgpKSAvLyBhcHBsaWVzIG1hc2ssIHNvIHdoZW4gdGltZSBpcyBncmVhdGVydGhhbiA0IGN5Y2xlcywgaXQgc3RhcnRzIHBsYXlpbmcKLy8gICAuY29sb3IoIm1hZ2VudGEiKS5fcHVuY2hjYXJkKCkKLy8gLy8gZHJ1bXMgCi8vICQ6c291bmQoIjxbYmQgYmRdIGhoIHNkIG9oIH4gc2QgfiBoaD4qOCIpLmJhbmsoIlJvbGFuZFRSODA4IikKLy8gLm1hc2sodGltZS5ndChpbnRyb0xlbmd0aCsxKSkKCi8vIC8vIGhhdHMvc25hcmVzIAovLyAkOiBzKCJ%2BIFt%2BIHZpYnJhc2xhcF0gfiB%2BIikuZ2FpbigiMC41IikubWFzayh0aW1lLmd0KGludHJvTGVuZ3RoKSkgLy8gcmF0dGxlc25ha2Ugc291bmQgCi8vICQ6IHMoIlt%2BIHdvb2RibG9jazoxLzRdIikubWFzayh0aW1lLmd0KGludHJvTGVuZ3RoKzIpKQovLyAkOiBzKCJbfiBoaWhhdF0qNCIpLm1hc2sodGltZS5ndChpbnRyb0xlbmd0aCsyKSkuZ2FpbigiMC44IikKCgovLyAvLyBtZWxvZHkgCi8vICQ6IG5vdGUoIjxbW2U0IGU0XSBbYTQgZzQ%2FMC40XSBbZTQgZTRdIFtnNCBhND8wLjFdXT4iKS5zb3VuZCgic2luIikubWFzayh0aW1lLmd0KGludHJvTGVuZ3RoKSkuZWNobygyLCAxLzYsIDAuNCkKLy8gJDogcygicGluayIpLm1hc2sodGltZS5ndChpbnRyb0xlbmd0aCkpLmdhaW4oMC4xKQoKCi8vIC8vIHZvaWNlIAovLyAkOiBub3RlKCJhOjIgYTo0Iikuc291bmQoImdtX3ZvaWNlX29vaHMiKS5tYXNrKHRpbWUubHQoaW50cm9MZW5ndGgrMikpCgoKCgoKCgovLyAvLyBTRUFOCgovLyAvLyBAdGl0bGUgV2VlayAyIC0gVHJhY2sgMwovLyAvLyBAbGljZW5zZSBDQyBCWS1OQy1TQSA0LjAgaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8KLy8gLy8gQGJ5IFNlYW4gVmVyYmEKLy8gLy8gQGRhdGUgSmFuIDIzLCAyMDI2CgovLyBzZXRjcHMoMTMwLzYwLzQpCi8vIHN0YWNrKAovLyAgIG5vdGUoImExKDMsOCwgPDAsIDEsIDIsIDE%2BKSIpLnNvdW5kKCJnbV9wYWRfd2FybSIpLmdhaW4oMC4zMykubGVnYXRvKCIwLjYiKS5waGFzZXIoMikucm9vbSgwLjkpLnNpemUoMiksCi8vICAgbm90ZSgiYTMoNSwxNikiKS5zb3VuZCgiZ21fcGl6emljYXRvX3N0cmluZ3MiKS5sZWdhdG8oMikuZm9sZCg0KS5nYWluKDAuMDUpLnZpYnJhdG8oKSwKLy8gICBub3RlKCJhITUoNCwxMCkiKS5zb3VuZCgiZ21fcGl6emljYXRvX3N0cmluZ3MiKS5sZWdhdG8oKS5mb2xkKDQpLmdhaW4oMC4wMjUpLnZpYnJhdG8oMiksCi8vICAgbm90ZSgiYTMgPGIyITMgYjM%2BIikuc291bmQoImdtX2Z4X2F0bW9zcGhlcmUiKS5yb29tKDIpLmdhaW4oMC4yKQovLyApCgoKCgovLyAvLyBOSVNNQQoKLy8gLy8gQHRpdGxlIFcwMi0wNAovLyAvLyBAbGljZW5zZSBDQyBCWS1OQy1TQSA0LjAgaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8KLy8gLy8gQGJ5IG5pc21hCi8vIC8vIEBkYXRlIEphbiAyNSwgMjAyNgoKLy8gLy8gMDQKLy8gc2FtcGxlcyh7aGl0OidodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzg0Mi84NDI1MDhfMTgyNTU0NTItaHEubXAzJywKLy8gICAgICAgICBwb3A6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzcwOC83MDg2MDVfMTM1MTU3MjYtaHEubXAzJ30pCi8vIHNldGNwcygwLjkpIC8vIHJlbGF4ZWQgYnV0IHVwYmVhdAovLyAkOiBub3RlKCI8W2M0IGU0IGc0XSB%2BIFtmNCBhNCBjNV0gfj4iKQovLyAgIC5zb3VuZCgicGlhbm8iKQovLyAgIC5sZWdhdG8oMC45KSAvL3BsYXlpbmcgd2l0aCB0aGUgbGVnYXRvIHZhbHVlIGRvZXMgZ2l2ZSBkaWZmZXJlbnQgYmVhdHMgLCB0cnkgbG93ZXJpbmcgaXQgdG8gbWFrZXMgdGhpcyBwYXJ0IGZhc3RlcgovLyAgIC5nYWluKDAuNikKLy8gICAucm9vbSgwLjIpCgovLyAkOiBuKCIgWzIgLTEgNSA8NyAyPiAgIDMgNiA8PDksLTE%2BIDwyLDY%2BPiA8MSAwPl0sPDwyLDQ%2BKjIgPDUsWzIgIDUgXS8yPj4iKSAvL2FkZGluZyByYW5kb21uZXNzIG1ha2VzIGl0IHZlcnkgZnVuICwgYnV0IG9yaWdpbmFsbHkgdGhlcmUgd2FzIG5vIHJhbmRvbW5lc3MgLCB0aGF0IHZlcnNpb24gaXMgYSBiaXQgZmFzdAovLyAgIC5zY2FsZSgiZDptaW5vckAzIikKLy8gICAuc291bmQoImdtX2VsZWN0cmljX2d1aXRhcl9jbGVhbkA0LGdtX2VsZWN0cmljX2d1aXRhcl9tdXRlZEAyIikKLy8gICAucm9vbSgxKS5scGYoMjAwMCw1MDAwKS5nYWluKDAuNCkuc2xvdygyKS5fcHVuY2hjYXJkKCkKCi8vICQ6IHNvdW5kKCI8W3BvcCBwb3AqMl0%2BICIpLmdhaW4oMC43KS5zbG93KDIpCgoKCgovLyBMRU8KCi8vIEB0aXRsZSBmcm9nLXNvdW5kc2NhcGUKLy8gQGJ5IGxlbwoKLy8gc2FtcGxlcyAoewovLyAgIGZyb2dBbWJpZW50OiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy83MTAvNzEwMjQ1XzEwOTU0NDM3LWxxLm1wMycsCi8vICAgZnJvc2NoOiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy8yNzUvMjc1NTUxXzUzNzQxMi1scS5tcDMnLAovLyAgIGNsaWNrZXI6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzIwMy8yMDM5MTBfMzU2NDgxMi1scS5tcDMnLAovLyAgIGxvd2Nyb2FjazogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNjMxLzYzMTQyMF8xNTE4NzgtbHEubXAzJywKLy8gICBiaXRmcm9nOiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy84Lzg3MjdfMjIzMzItbHEubXAzJyAgCi8vIH0pCi8vIHN0YWNrKAovLyAgIHMoIls8MjUgMTIgMTUgNj5dIFtmcm9nQW1iaWVudD8wLjYgM10%2FMC42IFtjbGlja2VyXSA8Y2xpY2tlciBmcm9zY2g%2BIGZyb3NjaCBbbG93Y3JvYWNrIHwgYml0ZnJvZyoyXSIpLmdhaW4oLjYpLAoKLy8gICBzKCJtaXNjKjYgYmQsIGJkITYiKS5iYW5rKCJLb3JnTWluaXBvcHMiKSwKICAKLy8gICBub3RlKCJbYyBkIGUgLiBmIGcgYV0%2FMC43LCBbYyBkIGUgLiBmIGcgYV0%2FMC41ICIpLnMoImdtX3BhZF9wb2x5IikuZ2FpbiguNyksCi8vICAgLy9ub3RlKCJbYyBkIGUgLiBmIGcgYV0iKS5zKCJnbV9wYWRfcG9seSIpLmdhaW4oLjcpLAoKLy8gICBzKCJbLSBiZCoyIC0gYmRAMyA8YmQgbHQqMz5dLCBbLSAtIGJkKjIgLSBiZEAzIDxiZCBsdCo2Pl0iKS5iYW5rKCJTaW1tb25zU0RTNSIpLmdhaW4oLjQpLAovLyAgIC8vcygiWy0gYmQqMiAtIGJkQDMgPGJkIHNkKjI%2BXSwgWy0gLSBiZCoyIC0gYmRAMyA8IC0gYmQgbWlzYyoyPl0iKS5iYW5rKCJLb3JnTWluaXBvcHMiKSwKLy8gKQoKCgovLyBKQVNISU0gKGJyYWlueSkKCgoKLy8gc2FtcGxlcyAoewovLyAgIE1lbG93OiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy81NTYvNTU2NjAyXzE5NTQ0MTEtbHEubXAzJywKLy8gICBLaWs6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzM2MS8zNjE5NTJfMTEwMzgyNy1scS5tcDMnLAovLyBzbjogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvMjIyLzIyMjA2MF8xNjc2MTQ1LWxxLm1wMycsCi8vICAgQkFTUzogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNjE1LzYxNTMyNl8xMTUzMjcwMS1scS5tcDMnLAovLyAgIFBlcmM6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzI2Ni8yNjY3MzFfNTAzOTM2OC1scS5tcDMnLAovLyAgIEI6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzE1MC8xNTA1MTdfMjUzNjYzMy1scS5tcDMnLAovLyAgIGRuYjogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvMzM3LzMzNzgxOV8yNTQwMjQ0LWxxLm1wMycsCi8vICAgZmFsbGluZzogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNTA2LzUwNjc4N182OTgwODA4LWxxLm1wMycsCi8vICAgbG93OiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy8xNzIvMTcyMzQwXzI2ODc0MjEtbHEubXAzJwovLyB9KQoKLy8gc2V0Y3BzKDM0MC8xMjAvNCkKCi8vICQ6IHNvdW5kKCJbTWVsb3cgfiB%2BIH5dLzE2IikKLy8gICAuZ2FpbigwLjgpCi8vICAgJDogcygia2lrIH4ga2lrIH4iICkKLy8gJDogcygifiBwZXJjIH4gcGVyYyIpLmdhaW4oMC42KQovLyAkOiBzKCJbQiB%2BIH4gfl0vNCIpCi8vICQ6IHMoInNuKjIgc24gfiB%2BIikuZ2FpbigwLjcpCi8vICQ6IHMoIltkbmIgfiB%2BIH5dLzQiICkuZ2FpbigwLjgpCgovLyAkOiBzKCJbZmFsbGluZyB%2BIH4gfl0vOCIpLmdhaW4oMC43KQovLyAkOiBzICgiW2xvdyB%2BIH4gfl0vMTYiKS5nYWluKDAuNCkKCgoKCi8vIEhVQkVSVCAoR3Jvb3Z5ISkKCgovLyBAdGl0bGUgVzAyLTA0Ci8vIEBsaWNlbnNlIENDIEJZLU5DLVNBIDQuMCBodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnktbmMtc2EvNC4wLwovLyBAYnkgSHViZXJ0IFNpYQovLyBAZGF0ZSBKYW4gMjUsIDIwMjYKCi8vIGNvbnN0IG5vdGVCbmsgPSAndHI5MDknCgovLyAkOiBzKCJoaCE4IikuZ2FpbiguMikKCi8vICQ6IHMoImNwIikuc3RydWN0KCJ7MSAwIDAgMSAwIDEgMCAwfSU4IikuYmFuayhub3RlQm5rKS5fcHVuY2hjYXJkKCkKLy8gJDogcygic2QiKS5iYW5rKG5vdGVCbmspLmJlYXQoIjQsMTIiLCAxNikuX3B1bmNoY2FyZCgpCgoKCi8vIEhBTklGIChMTE0%2FKQoKLy8gTGF5ZXJlZCBQZXJpb2RpYyBUcmFuc2Zvcm1hdGlvbgoKLy8gc2V0Y3BzKDEyNy82MC80KQoKLy8gbGV0IGtpY2sgPSBzKCJiZCgzLDgpPzAuMSIpLnNwZWVkKDAuNykubHBmKDcwKS5nYWluKDEuNCkKLy8gbGV0IHB1bHNlID0gcygiW2JkOjE1fGJkOjE0XSg1LDE2KSIpLnNwZWVkKDAuNSkubHBmKDQwKS5nYWluKHNpbmUuc2xvdyg4KS5yYW5nZSgwLjQsIDEuMikpCi8vIGxldCBtZXRhbGxpYyA9IHMoImhoKDcsMTIpPyIpLnNwZWVkKDIpLmhwZig2MDAwKS5nYWluKDAuMzUpLnBhbihzaW5lLnNsb3coMykpCi8vIGxldCBnaG9zdCA9IHMoInNkKDUsMTMpIikuc29tZXRpbWVzKHggPT4geC5wbHkoMikpLnNwZWVkKDEuNSkuZ2FpbigwLjMpLnJvb20oMC43KQovLyBsZXQgdGV4dHVyZSA9IHMoInBlcmM6OSgxMSwxNikiKS5yYXJlbHkoeCA9PiB4LnNwZWVkKDAuMjUpKS5nYWluKHNpbmUuc2xvdygxNikucmFuZ2UoMCwgMC41KSkKCi8vIHN0YWNrKGtpY2ssIHB1bHNlLCBtZXRhbGxpYywgZ2hvc3QsIHRleHR1cmUpCi8vICAgLmJhbmsoIlJvbGFuZFRSOTA5IikKLy8gICAuc2hhcGUoMC4xNSkKLy8gICAvLyAxLiBEZW5zaXR5IEJ1cnN0OiBFdmVyeSA0IGN5Y2xlcywgdGhlIHdob2xlIHN0YWNrIHBsYXlzIHR3aWNlIGFzIGZhc3QgWzIsIDRdCi8vICAgLmV2ZXJ5KDQsIHggPT4geC5mYXN0KDIpKQoKLy8gICAvLyAyLiBUb25hbCBNdXRhdGlvbjogRXZlcnkgMyBjeWNsZXMsIHNoaWZ0IHRoZSBzcGVlZC9waXRjaCBoaWdoZXIgWzJdCi8vICAgLmV2ZXJ5KDMsIHggPT4geC5zcGVlZCgxLjI1KSkKCi8vICAgLy8gMy4gU3RydWN0dXJhbCAiQnJlYXRoaW5nIjogRXZlcnkgNiBjeWNsZXMsIGFwcGx5IGEgbWFzayB0byB0aGluIHRoZSB0ZXh0dXJlIFs0LCA1XQovLyAgIC5ldmVyeSg2LCB4ID0%2BIHgubWFzaygiPDEgMSAwIDEgMCAxPiIpKQoKLy8gICAvLyA0LiBUZW1wb3JhbCBEaXNwbGFjZW1lbnQ6IE9jY2FzaW9uYWxseSBzaGlmdCB0aGUgdGltaW5nIGZvciBhICJzd2luZyIgZmVlbCBbNF0KLy8gICAub2Z0ZW4oeCA9PiB4LmxhdGUoMC4wNSkpCgoKCgoKCi8vIEVNTUEKCi8vIEBCZWF0cyBXMDItMDEKLy8gQGxpY2Vuc2UgQ0MgQlktTkMtU0EgNC4wIGh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS1uYy1zYS80LjAvCi8vIEBieSB2aWdsaWVuc29uaQovLyBAZGF0ZSBKYW4gMjMsIDIwMjYKCi8vMDIKCi8vIHNldGNwcygxMzAvNjAvNCkKLy8gc2FtcGxlcyh7Ci8vICAgZHJ1bTogICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzIwOC8yMDg1NjBfNTI4MTAwLWxxLm1wMycsCi8vICAgICAgIGNsaWNrOiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy83NTEvNzUxMDgxXzEyODA1NTc2LWxxLm1wMycsCi8vICAgcGx1Y2s6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzM4MS8zODE3NzlfNDM5ODY4OC1scS5tcDMnLAovLyAgIHZpb2xpbjogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNTYvNTYwMTlfNjkyMzc1LWxxLm1wMycKLy8gICAvL3N5bnRoOiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy83ODQvNzg0MTMzXzcwNjExODQtbHEubXAzJwovLyB9KQogICAKLy8gJDpzKCJkcnVtKDUsOCkgcGx1Y2soMiw4KSwgdmlvbGluKDMsOCkiKS5zb3VuZCgib2giKS5nYWluKDAuNykKCi8vICQ6cygiZHJ1bSg0LDQpIHBsdWNrKDIsNCkgdmlvbGluKDIsNCkiKS5zb3VuZCgiYmQiKS5nYWluKDEpCi8vICQ6IG5vdGUoImUgYiBnIGYgIGcgYiBmIGUiKS5zb3VuZCgicGlhbm8iKS5zY2FsZSgiQzptYWpvciIpIAoKCgoKCi8vIEVBTU9OCgovLyBAdGl0bGUgVzAyLTA1Ci8vIEBsaWNlbnNlIENDIEJZLU5DLVNBIDQuMCBodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnktbmMtc2EvNC4wLwovLyBAYnkgZWFtb24xMDAwMDAwCi8vIEBkYXRlIEphbiAyNiwgMjAyNgoKLy8gY29uc3QgZGIgPSAieWFtYWhhcm01MCIKLy8gc2V0Y3BtKDIwKQoKLy8gLy9lZmZlY3QgY2hhaW5zCi8vIHZhciBlZmZlY3RDaGFpbiA9IGVmZmVjdENoYWluID0gcmVnaXN0ZXIoJ2VmZmVjdENoYWluJywgKHBhdCkgPT4gcGF0Ci8vICAgLnMoInNpbmUiKQovLyAgIC5jdXRvZmYoMjAwKQovLyAgIC5kZWxheSgwLjUpCi8vICAgLnJvb20oMC41KQovLyAgIC5wYW4oIjAuNzUgMC4yNSAwIDEgMC40IikKLy8gKQoKLy8gdmFyIGVmZmVjdENoYWluMiA9IHJlZ2lzdGVyKCdlZmZlY3RDaGFpbjInLCAocGF0bSwgZGlzdCkgPT4gZGlzdAovLyAgIC5kZWxheSgwLjc1KQovLyAgIC5jaG9ydXMoLjUpCi8vICAgLnJldigpCi8vICkKCi8vIC8vdHJ5aW5nIGRpZmZlcmVudCB0aGluZ3Mgd2l0aCBkZWNsYXJlZCBsYW1iZGEgZnVuY3Rpb25zCi8vIHZhciByZXZlcmJQID0gKHJldmVyYnApID0%2BIHJldmVyYnAucm9vbSgiMCAuOCAxLjIgMC41IDAgMCAyIDMgNCA1IDAuNCAyIDMgMCAwIikuZXVjbGlkKCI8WzMgfCA3XSBbNCB8Ml0gNSA2PiIuZXVjbGlkKDEsMSksICI4IDciKQovLyB2YXIgZGlzdG9ydFAgPSAoZGlzdG9ydHApID0%2BIGRpc3RvcnRwLmRpc3RvcnQoMC42KS5kaXN0b3J0dHlwZSgiPDAgMSAyIDMgNCA1PiIpCgovLyB2YXIgcmV2ZXJiQ2hhaW4gPSByZWdpc3RlcigncmV2ZXJiQ2hhaW4nLCByZXZlcmJQKQovLyB2YXIgZGlzdG9ydENoYWluID0gcmVnaXN0ZXIoJ2Rpc3RvcnRDaGFpbicsIGRpc3RvcnRQKQoKLy8gLy9raWNrcwovLyAkOiBzKCJbYmQ6OCg0LDQpIHwgYmQ6OCg1LDgpIHwgYmQ6OCgzLDgpXSIpLmJhbmsoZGIpLmdhaW4oMS4yKQovLyAkOiBzKCJbW2JkOjExKDQsNCkgfCBiZDoxMDAoNCw0KV0gfCBbYmQ6NTAoNSw4KSB8IGJkOjQ4KDUsOCldIHwgYmQ6NzAoMyw4KV0iKS5iYW5rKGRiKS5nYWluKDEuMikKCi8vIC8vZGl2aW5nIHN5bnRocwovLyAkOiBub3RlKCJbZiMgYSMgZyMgZSNdLzIiKS5kZWdyYWRlQnkoMC4yKS5zb3VuZCgic3VwZXJzYXciKS5lZmZlY3RDaGFpbjIoZGlzdG9ydFApLmxwZigiPDgwMCA3MDAgNjAwIDUwMCA0MDAgMzAwIDIwMCAzMDAgNDAwIDUwMCA2MDAgNzAwPiIpCi8vICQ6IG5vdGUoIltmIyBmIyBhIyBnIyBkIyBlIyBlIyBbZCMgfCBhIyB8IGMjXV0vMiIpLnNvdW5kKCJzcXVhcmUiKS5scGYoIjw4MDAgOTAwIDEwMDAgMTEwMD4iKS5lZmZlY3RDaGFpbigpLmdhaW4oMS42KQovLyAkOiBub3RlKCJbW2YjNCB8IGYjNV0gfCBbYSM0IHwgYSM1XSB8IFtnIzQgfCBnIzVdIHwgW2UjNCB8IGUjNV1dLzQiKS5nYWluKDAuNykuYWRzcigiMC4zOjAuNjowLjAwMTowLjAwMDEiKS5zb3VuZCgic2F3dG9vdGgiKS5scGYoIjw2MDAgNjAwIDUwMCA0MDAgMzAwIDYwMD4iKS5kZWxheSgwLjUpLnJvb20oNSkKCi8vIC8vYmVsbHMKLy8gJDogcygiaGFuZGJlbGxzIHwgaGFuZGJlbGxzOjEgfCBoYW5kYmVsbHM6MiB8IFtoYW5kYmVsbHM6MiBoYW5kYmVsbHM6MiBoYW5kYmVsbHNdIHwgW2hhbmRiZWxsczoxIGhhbmRiZWxsczoyIGhhbmRiZWxscyBoYW5kYmVsbHMgaGFuZGJlbGxzOjFdLzIgfCBbaGFuZGJlbGxzIGhhbmRiZWxsczoxIGhhbmRiZWxsczoxIGhhbmRiZWxsczoyXS8yIikuZ2FpbigwLjcpLmRlbGF5KCI8NCAyIDEgMiA1PiIpLnJvb20oNCkuZGVncmFkZUJ5KDAuMykuc29tZXRpbWVzQnkoMC40LCB4PT54LnNwZWVkKDAuOSkpCgovLyAvL2NvbXB1dGVyIGRyb3BsZXRzCi8vICQ6IHMoIjxbaGgoNSwxNikgfCBoaDozKDcsOCldIFtoaDo0KDUsOCkgfCBoaDo2KDMsOCldPiIpLmVmZmVjdENoYWluMihkaXN0b3J0UCkuYmFuaygic3BhY2VkcnVtIikuZ2FpbigxLjEpLnNvbWV0aW1lc0J5KC41LCB4PT54LnNwZWVkKCJbMC42IHwgMC43IHwgMC45XSIpKQoKLy8gLy9pbnNlY3QgYmFuZAovLyAkOiBzKCJpbnNlY3QgfCBpbnNlY3Q6MyIpLmV1Y2xpZCgiPFszIHwgN10gWzQgfDJdIDUgNj4iLCA4KS5zcGVlZCgiWzAuNyB8IDFdIikuZ2FpbigwLjUpLmRlbGF5KCI8NCAyIDIgMD4iKS5yb29tKDAuMykuY2hvcnVzKC41KQoKCgoKCi8vIENMQVJFTkNFCgovLyBAdGl0bGUgbWVhZG93X2Nob2lyCi8vIEBieSBjbGFyZW5jZQovLyBAZGF0ZSAyMCBKYW4KCgovLyBzZXRjcHMoMTIwLzYwLzQpCgovLyBzYW1wbGVzKHsKLy8gICBtZXRhbDonaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy80MDUvNDA1NjY1XzU5MjMwNDUtaHEubXAzJywKLy8gICBwYWQ6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzQ5Ny80OTc0ODBfMTAzNTAyODEtaHEubXAzJywKLy8gICBnaXQ6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzc5OS83OTkwMDhfMTY4NDAyNDItaHEubXAzJywKLy8gICB3ZXQ6IFsnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy8yNjcvMjY3MjIxXzMxMTI1MjItaHEubXAzJywKLy8gICAgICAgJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvMzUzLzM1MzY5MV8xNDMxOTI0LWhxLm1wMyddLAovLyAgIGJkOiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy8xMzIvMTMyNjI5XzIyMjUzOTYtbHEubXAzJywKLy8gICBjaG9pcjogJ2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNTc4LzU3ODMyN18xMDUyMjM4Mi1scS5tcDMnIAovLyB9KQoKLy8gLy8gZ3VpdGFyCi8vICQ6IG5vdGUoIltkMyBkMyBlIzNdIH4gfiBbZjMgfiAgPGczIGMzLzMgW2Y0IGc0KjJdPl0iKS5zKCJnaXQiKQovLyAgIC5nYWluKCIwLjE1IikKLy8gICAuZGVsYXkoIi4zIC43Iikucm9vbSguOSkKLy8gICAubHBmKCI2MDAiKQovLyAgIC5mYXN0KCIxIikuY29sb3IoIltncmV5IGJsdWVdIikuc2xvdygxKS5wdW5jaGNhcmQoKQovLyAgIC8vLmhwZigiMjAwMCIpCgovLyAvL3BhZAovLyAkOiBub3RlKCI8ZDIqMiBbZzEgZzJdPiIpLnMoInBhZCIpLmN1dCgxKS5nYWluKCIwLjIiKS5scGYoIjUwMCIpCgovLyAvL21ldGFsIAovLyAkOiBub3RlKCJjNSoyIGQ1KjQgPGU0KjIgZTQqNj4iKS5zKCJtZXRhbCIpLmN1dCgiMiIpLmdhaW4oIjAuMiIpLnBhbigiMC41IFswLjIgMC43KjJdIDAuMSIpLmNvbG9yKCJbd2hpdGUgcGlua10iKS5wdW5jaGNhcmQoKQoKLy8gLy9kcm9wbGV0cwovLyAgJDogbm90ZSgiIH4hMiA8IFtlNCBbZTQgZTM%2FMC40XV0gW34gZTQqMl0%2BIikucygid2V0OjIiKSAvLyByYW5kb20gCi8vICAgLy8uY3V0KCIyIikKLy8gICAuZ2FpbigiMC41IikKLy8gICAucm9vbSgiMC4wNiIpIAoKLy8gLy9iYXNzIGRydW0KLy8gJDpub3RlKCI8YzIqMiBkIzIqMj4gfiEyIikucygiYmQiKS5jdXQoIjIiKS5nYWluKCIwLjIiKS5mYXN0KDEpLmRpc3QoIjUiKS5scGYoIjIwMCIpLmdhaW4oIjAuMDAyIikuY29sb3IoIltncmV5IGJsdWVdIikucHVuY2hjYXJkKCkKCgoKCgoKCgoKCgoKCgovLyBAdGl0bGUgVzAyLTAyCi8vIEBsaWNlbnNlIENDIEJZLU5DLVNBIDQuMCBodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnktbmMtc2EvNC4wLwovLyBAYnkgY2VsaW5lIHRyYW4KLy8gQGRhdGUgSmFuIDIwLCAyMDI2CgovLyAwMiBDRUxJTkUKCi8vIHN0YWNrKAovLyAgIG5vdGUoImRiIGViIGdiIGdiIGFiIGJmIikKLy8gICAuc291bmQoImdtX3ZvaWNlX29vaHMiKQovLyAgIC5nYWluKDAuNSkKLy8gICAuc2xvdygzKQovLyAgIC5yb29tKDAuNikKLy8gICAuc2l6ZSgwLjgpLAogIAovLyAgIG5vdGUoIltkYiBiYl0vMiIpCi8vICAgLnNvdW5kKCJwaWFubyIpCi8vICAgLmxlZ2F0bygxLjIpCi8vICAgLmdhaW4oMC43KQovLyAgIC5zbG93KDIpLAogIAovLyAgIG5vdGUoImViIGdiIGFiIikKLy8gICAuc291bmQoImdtX3N0cmluZ19lbnNlbWJsZV8xIikKLy8gICAuc2xvdygzKQovLyAgIC5nYWluKDAuMykKLy8gICAubGVnYXRvKDEuNSkKLy8gICAucmVsZWFzZSgwLjQpLAoKLy8gICBub3RlKCI8fiBkYiB%2BIGdiIH4%2BIikKLy8gICAuc291bmQoImdtX3R1YnVsYXJfYmVsbHMiKQovLyAgIC5zbG93KDIpCi8vICAgLmdhaW4oMC4zKQovLyAgIC5yZWxlYXNlKDAuNCksCiAgCi8vICAgbm90ZSgiZGIgZWIgZ2IgYWIgYmIgZGIgYmIgYWIgfCBnYiBhYiBiYiBkYiBlYiBkYiBiYiBhYiB8IGRiIGViIGdiIGFiIH4gZ2IgZWIgZGJ8IGRiIGViIGdiIGFiIGJiIH4gYWIgZ2IgfCBlYiBnYiBhYiBiYiBkYiBiYiBhYiBnYiIpCi8vICAgLnNvdW5kKCJwaWFubyIpCi8vICAgLmdhaW4oMC43KQovLyAgIC5zbG93KDIpLAovLyApLl9wdW5jaGNhcmQoKQoKCgoKCgovLyBDQVRIWQovLyBAdGl0bGUgVzAyLTA0Ci8vIEBsaWNlbnNlIENDIEJZLU5DLVNBIDQuMCBodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnktbmMtc2EvNC4wLwovLyBAYnkgY2F0aHkgdGhhbQovLyBAZGF0ZSBKYW4gMjYsIDIwMjYKCi8vIHNhbXBsZXMoewovLyAgIHNvdW5kOiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy84NDMvODQzMDg0XzE3NzA3Nzk5LWxxLm1wMycsCi8vICAgc291bmRfMjonaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy84NDMvODQzMDgzXzE3NzA3Nzk5LWxxLm1wMycKLy8gfSkKCi8vIHN0YWNrKAovLyAgIHMoImJkIikKLy8gICAgIC5ldWNsaWQoNSwgOCkKLy8gICAgIC5nYWluKDAuOSksCgovLyAgIHMoIlt2b29kb286MiByaW1dIikKLy8gICAgIC5ldWNsaWQoMywgOCkKLy8gICAgIC5nYWluKDAuNyksCgovLyAgIHMoImhoIikKLy8gICAgIC5ldWNsaWQoNywgMTYpCi8vICAgICAuZ2FpbigwLjUpLAoKLy8gICBzKCJiYWxhZm9uOjYiKQovLyAgICAgLmV1Y2xpZCgzLCA4KQovLyAgICAgLmdhaW4oMC42KSwKCi8vICAgcygiW2Nhc2lvOjMga2F3YWk6MzddIikKLy8gICAgIC5ldWNsaWQoMiwgNykKLy8gICAgIC5nYWluKDAuNiksCgovLyAgIHMoIltzb3VuZF8yOjIgc291bmRfMjoxIH4gc291bmRfMjozXSIpCi8vICAgICAuZXVjbGlkKDMsIDgpCi8vICAgICAuZ2FpbigwLjUpLAoKLy8gICBzKCI8c291bmQ6MSB%2BIHNvdW5kOjIgc291bmQ6Mz4iKQovLyAgICAgLmV1Y2xpZCgyLCA1KQovLyAgICAgLmdhaW4oMC41KSwKCi8vICAgcygic291bmQiKQovLyAgICAgLmV1Y2xpZCgxLCA4KQovLyAgICAgLmdhaW4oMikKLy8gKQovLyAuZXZlcnkoNCwgeCA9PiB4LnNsb3coMikpCgoKCgoKCgoKCgoKCgoKCgovLyBCaWFuY2EgKERvbid0IGZvcmdldCB0byBpbmRpY2F0ZSB5b3VyIGZhdm9yaXRlKQoKLy8gc2FtcGxlcyh7Ci8vIGRydW06J2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNTk5LzU5OTg3Nl8yODcxMzE0LWxxLm1wMycsCi8vIGJhc2VfZHJ1bTonaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy8zNi8zNjUzOV8xMDk3OTgtbHEubXAzJywKLy8gZHJ1bV9raWNrOidodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzU4MS81ODE0NTRfNTc5MDA0OC1scS5tcDMnLAovLyBzdG9tcGluZzonaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy84MjkvODI5ODE0XzE3Njc1NjgzLWxxLm1wMycsCi8vIGtpY2s6J2h0dHBzOi8vY2RuLmZyZWVzb3VuZC5vcmcvcHJldmlld3MvNjkxLzY5MTczN180ODE5MjEwLWxxLm1wMycsCi8vIGtpY2tfb25lOidodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzY5MS82OTE3MzlfNDgxOTIxMC1scS5tcDMnLAovLyBraWNrX3R3bzonaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy84MzMvODMzNTQ5XzE3Njc1NjgzLWxxLm1wMycsCi8vIGdsaXRjaDonaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy84NDMvODQzMDM3XzE3Njc1NjgzLWxxLm1wMycsCi8vIHNuYXJlOidodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzg0My84NDMwMzhfNTUxMTE3NS1scS5tcDMnLAovLyBlbGVjdHJpYzonaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy8zODUvMzg1ODY4XzcxMjM2ODctbHEubXAzJywKLy8gZ3VpdGFyOidodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzUwOC81MDg4MTFfMTY5MDEwMi1scS5tcDMnCi8vICB9KQoKLy8gJDogcygiW3NuKDMsOCkgcmltKDIsNSldLCBbYmFzZWRfZHJ1bToyKjE2PzAuMnwgZ2xpdGNoOjI%2FMC43XSIpLl9zY29wZSgpCi8vICQ6IHMoIltzdG9tcGluZzoxKDMsOCw8MCAwIDAgMT4pXSoyLCBbZ2xpdGNoOjEgfl0qOCwgW3NuYXJlOjEoMyw4LDwwIDAgMCAxPildIikuc2NhbGUoImc6bWFqb3IiKS5wdW5jaGNhcmQoKQovLyAkOnMoInNuYXJlOjYgWyBoaCBoaCo1IGhoIGhoKjJdIikuc3RydWN0KCJ7MSAwICAxIDAgMSAwIDEgMX0lOCIpLnNjYWxlKCJmIikuX3BpYW5vcm9sbCgpCi8vICQ6cygiZHJ1bV9raWNrOjEoMyw4LDwwIDAgMCAxPikqMiIpLl9wdW5jaGNhcmQoKQoKCgoKCgoKCgoKCgoKCgoKCi8vIEJFQTogREppbmcgd2l0aCBTdHJ1ZGVsIQovLyBzYW1wbGVzKCdnaXRodWI6dGlkYWxjeWNsZXMvZGlydC1zYW1wbGVzJykKLy8gc2FtcGxlcyh7Ci8vICAgZGVlcG5vaXNlOiAnaHR0cHM6Ly9jZG4uZnJlZXNvdW5kLm9yZy9wcmV2aWV3cy83NDgvNzQ4MzI4XzEyODgwMTUzLWxxLm1wMycsCi8vICAgYmFzc3k6ICdodHRwczovL2Nkbi5mcmVlc291bmQub3JnL3ByZXZpZXdzLzMyOC8zMjgyMTBfMTAxNTI0MC1scS5tcDMnCi8vIH0pCgovLyAvL3RoZSBiYXNzeSBzb3VuZCBraWNraW5nIGluIGlzIG5pY2UsIGJ1dCBkb2VzbnQgaGFwcGVuIGltbWVkaWF0ZWx5CgovLyAkOiBzKCI8fiB%2BIH4gW2RvZXBmZXJtczQwNF9vaCo4XT4iKS5nYWluKDAuMykKLy8gJDogcygiZG9lcGZlcm1zNDA0X2x0KjMgZG9lcGZlcm1zNDA0X2JkIH4gfiB%2BIikKLy8gJDogcygiW2Jhc3MwOjF8YmFzczA6Ml0sIDxiYXNzMEAwIGJhc3MwQDE%2BIikuZ2FpbigwLjEpCi8vICQ6IHMoIltnbGl0Y2g6MiBnbGl0Y2g6MiBnbGl0Y2g6MiBnbGl0Y2g6NV0oMyw4KSwgPFt%2BIH4gZ2xpdGNoMjozIH5dPiIpLmdhaW4oMC41KQovLyAkOiBzKCJkZWVwbm9pc2UiKS5zdXN0YWluKDMyKS5nYWluKDAuMykKLy8gJDogcygiYmFzc3kiKS5zdXN0YWluKDE2KS5zbG93KDgpCgoKCgoKCgoKCgovLyBBQUxPSwovLyBOT1RFOnBsZWFzZSByZWR1Y2UgeW91ciB2b2x1bWUgYmVmb3JlIHBsYXlpbmcgdGhpcyAKLy8gYW5kIHNsb3dseSBpbmNyZWFzZSBpdCwgdGhlcmUgYXJlIGhhcnNoIG5vaXNlcwovLyBAdGl0bGUgIFcwMi0wNQovLyBAbGljZW5zZSBDQyBCWS1OQy1TQSA0LjAgaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC8KLy8gQGJ5IEFhbG9rIFN1ZAovLyBAZGF0ZSBKYW4gMjYsIDIwMjYKCi8vIHNldGNwcygwLjU4KQoKLy8gLy8ga2lja3MgLSA0IGFnYWluc3QgMwovLyAkOiBzb3VuZCgiYmQ6Myo0LCBiZDo4KjMiKS5zcGVlZCgiPDEgMC44NyAxLjEzIDAuOTQ%2BIikuZGlzdG9ydChwZXJsaW4ucmFuZ2UoMC4zLCAxLjIpKS5jcnVzaChzaW5lLnJhbmdlKDIsIDgpLnNsb3coMykpLmxwZihwZXJsaW4ucmFuZ2UoNDAsIDMwMCkpLmdhaW4oMS40KS5iYW5rKCJSb2xhbmRUUjkwOSIpCgovLyAvLyAgc25hcmUgCi8vICQ6IHNvdW5kKCJ%2BIH4gY3A6NCB%2BIikuc3BlZWQoIi0wLjgiKS5yb29tKDAuOSkuc2l6ZSgwLjk1KS5nYWluKDEuMCkuZGlzdG9ydCgwLjkpLmNydXNoKCIzIikuaHBmKHNpbmUucmFuZ2UoMjAwLCA0MDAwKS5zbG93KDcpKS5iYW5rKCJSb2xhbmRUUjkwOSIpCgovLyAvLyBoYXQgLSByYW5kb20gZGVuc2l0aWVzCi8vICQ6IHNvdW5kKCJoaDo3Kjw3IDEzIDE5IDIzPiIpLmdhaW4ocmFuZC5yYW5nZSgwLjIsIDAuOSkpLnNwZWVkKHJhbmQucmFuZ2UoMC4zLCAyLjUpKS5ocGYocGVybGluLnJhbmdlKDUwMDAsIDE1MDAwKSkuY3J1c2gocmFuZC5yYW5nZSgzLCA5KSkucGFuKHJhbmQpLmN1dCgxKS5iYW5rKCJSb2xhbmRUUjkwOSIpCgovLyAvLyBQaXRjaC1zaGlmdGVkIGN5bWJhbCAKLy8gJDogc291bmQoImN5OjMiKS5zcGVlZChzaW5lLnJhbmdlKDAuMSwgMC40KS5zbG93KDIzKSkucm9vbSgwLjk1KS5zaXplKDAuOTgpLmdhaW4oMC43KS5ocGYoMjAwMCkuZGVsYXkoMC45KS5kZWxheXRpbWUoc2luZS5yYW5nZSgwLjEsIDAuOSkuc2xvdygxMSkpLmRlbGF5ZmVlZGJhY2soMC45NSkuYmFuaygiUm9sYW5kVFI5MDkiKQoKLy8gLy8gU3R1dHRlciBiYXNzCi8vICQ6IHNvdW5kKCJiZDowKjxbNSA3XSBbMTEgMTNdIFszIDUgN10gWzE3IDE5XT4iKS5zcGVlZChwZXJsaW4ucmFuZ2UoMC4yLCAwLjUpKS5scGYocmFuZC5yYW5nZSgzMCwgODApKS5kaXN0b3J0KHNpbmUucmFuZ2UoMC40LCAxLjApLnNsb3coNSkpLmdhaW4oMS4yKS5iYW5rKCJSb2xhbmRUUjgwOCIpCgovLyAvLyBOb2lzZSAKLy8gJDogc291bmQoIm5vaXNlOjgqPFszIDUgOF0gWzIgNyAxMV0gWzQgOV0gWzYgMTMgMTddPiIpLnNwZWVkKHJhbmQucmFuZ2UoMC4xLCAzLjUpKS5jcnVzaChyYW5kLnJhbmdlKDEsIDYpKS5yb29tKHJhbmQucmFuZ2UoMC4zLCAwLjk1KSkuZ2FpbihyYW5kLnJhbmdlKDAuNCwgMS4wKSkuaHBmKHJhbmQucmFuZ2UoNTAwLCA4MDAwKSkubHBmKHJhbmQucmFuZ2UoMjAwMCwgMTIwMDApKS5iYW5rKCJSb2xhbmRUUjkwOSIpCgovLyAvLyBtZXRhbAovLyAkOiBzb3VuZCgibWV0YWw6Mio8MiAzIDUgNz4iKS5zcGVlZChzYXcucmFuZ2UoMS41LCAwLjEpLnNsb3coOCkpLmRlbGF5KDAuOCkuZGVsYXl0aW1lKHBlcmxpbi5yYW5nZSgwLjAzMTI1LCAwLjc1KSkuZGVsYXlmZWVkYmFjaygwLjkpLmdhaW4oMC45KS5ocGYoMTAwMCkuY3J1c2gocGVybGluLnJhbmdlKDIsIDcpKS5wYW4oc2luZS5zbG93KDMpKS5iYW5rKCJSb2xhbmRUUjgwOCIpCgovLyAvLyBNaWNyby10aW1lZCB0b21zIAovLyAkOiBzb3VuZCgibHQ6MiwgfiBtdDozIH4sIH4gfiB%2BIGh0OjQiKS5zcGVlZChyYW5kLnJhbmdlKDAuMywgMS41KSkuZGlzdG9ydChwZXJsaW4ucmFuZ2UoMC41LCAxLjApKS5yb29tKHNpbmUucmFuZ2UoMC4yLCAwLjgpLnNsb3coMTMpKS5nYWluKDEuMSkubHBmKHJhbmQucmFuZ2UoMjAwLCA4MDApKS5jcnVzaChyYW5kLnJhbmdlKDIsIDUpKS5iYW5rKCJSb2xhbmRUUjkwOSIpCgovLyAvLyBzbmFyZQovLyAkOiBzb3VuZCgic246Nio8MCAwIFsxMSAxNyAyMyAyOV0gMD4iKS5zcGVlZChwZXJsaW4ucmFuZ2UoMC4yLCAzLjApKS5jdXQocmFuZC5yYW5nZSgxLCAzKSkuY3J1c2goc2luZS5yYW5nZSgxLCA3KS5zbG93KDIpKS5kZWxheSgwLjk1KS5kZWxheXRpbWUocmFuZC5yYW5nZSgwLjAxLCAwLjUpKS5kZWxheWZlZWRiYWNrKDAuOTgpLmdhaW4oMC44KS5wYW4ocGVybGluKS5iYW5rKCJSb2xhbmRUUjkwOSIpCgovLyAvLyBzd2FybQovLyAkOiBzb3VuZCgiY3A6OCo8WzcgMTFdIFsxMyAxN10gWzUgOSAxM10gWzE5IDIzXT4iKS5zcGVlZChzaW5lLnJhbmdlKDAuNiwgMS40KS5zbG93KDcpKS5kaXN0b3J0KHJhbmQucmFuZ2UoMC4zLCAxLjApKS5nYWluKHBlcmxpbi5yYW5nZSgwLjMsIDAuOSkpLnJvb20oMC43KS5jcnVzaChwZXJsaW4ucmFuZ2UoMywgOCkpLmhwZihzaW5lLnJhbmdlKDQwMCwgMzAwMCkuc2xvdyg1KSkuYmFuaygiUm9sYW5kVFI5MDkiKQoKLy8gLy8gaGF0Ci8vICQ6IHNvdW5kKCJvaDozKjwzIDUgNyAxMT4iKS5zcGVlZChwZXJsaW4ucmFuZ2UoMC41LCAyLjApKS5nYWluKHNpbmUucmFuZ2UoMC4zLCAwLjkpLnNsb3coOSkpLmhwZihzaW5lLnJhbmdlKDQwMDAsIDEyMDAwKS5zbG93KDEzKSkuZGVsYXkocGVybGluLnJhbmdlKDAuMiwgMC44KSkuZGVsYXl0aW1lKHJhbmQucmFuZ2UoMC4wNjI1LCAwLjc1KSkuZGlzdG9ydChwZXJsaW4ucmFuZ2UoMC4yLCAwLjgpKS5iYW5rKCJSb2xhbmRUUjkwOSIpCgoKCgovLyA%3D" style="width:100vw; height:50vh" class="embed-full" >
+  </iframe>
+
+
+
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 1 — Mimic a beat
+Try as many approaches you can to mimic this beat
+
+<iframe src="https://strudel.cc/#Ly8gQHRpdGxlIHBlcnJlaXRvIAovLyBAYnkgTWFyaWFoIEFuZ2VsaXEKc2FtcGxlcygnZ2l0aHViOmNvbmNvcmRpYS1kY2FydC9zYW1wbGVzLWV4dHJhJykKc2V0Y3BzKDkwLzYwLzQpCgpzKCJwZXJyZS1sb29wLzIiKQo%3D"
+  style="width:100vw; height:25vh" class="embed-full" >
+  </iframe>
+
+notes:
+Sol 1:
+```js
+$: s("bd*4")
+$: s("~ [~ sd] ~ sd ~ [~ sd] ~ sd ")
+
+// can be simplified
+c: s("[~ [~ sd] ~ sd]*2")
+
+// change sounds to
+// b: s("perr-kk*4")
+// c: s("[~ [~ perr-sn] ~ perr-sn]*2")
+```
+Sol 2: 
+```js
+// using struct
+$: s("perr-kk").struct("x ~ ~ ~ x ~ ~ ~ x ~ ~ ~ x ~ ~ ~")
+$: s("perr-sn").struct("~ ~ ~ x ~ ~ x ~ ~ ~ ~ x ~ ~ x ~")
+```
+Sol: 3
+```js
+// using a mask
+$: s("perr-kk*16").mask("1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0")
+$: s("perr-sn*16").mask("0 0 0 1 0 0 1 0 0 0 0 1 0 0 1 0")
+```
+Sol4:
+```js
+// using binary notation
+$: s("perr-kk").struct(binaryN(34952, 16))
+$: s("perr-sn").struct(binaryN(4626, 16))
+```
+Sol 5:
+```js
+// using euclidean rhythms
+stack(
+  s("[perr-kk(2,8)]*2"),
+  s("[perr-sn(3,8)*2]").mask("[0 1!3]*2")
+  )
+```
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+# Controlling samples
+
+
+- `begin()`
+- `end()`
+- `loop()`
+- `loopBegin()`
+- `loopEnd()`
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+# Controlling samples
+
+<iframe
+class="embed-full"
+  src="https://strudel.cc/learn/samples/#sampler-effects"
+  style="width:100vw; height:50vh">
+  </iframe>
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+# more sample control
+
+<iframe src="https://strudel.cc/#CnNldGNwcyg5MC82MC80KQpzYW1wbGVzKHsgcGVycmVpdG86ICdwZXJyL3BlcnJlLWxvb3AvcGVycmVpdG8ud2F2JyB9LCAnZ2l0aHViOmNvbmNvcmRpYS1kY2FydC9zYW1wbGVzLWV4dHJhJykKCi8vIGBzdHJpYXRlYCBjdXRzIGVhY2ggc2FtcGxlIGludG8gdGhlIGdpdmVuIG51bWJlciBvZiBwYXJ0cywgCi8vIHRyaWdnZXJpbmcgcHJvZ3Jlc3NpdmUgcG9ydGlvbnMgb2YgZWFjaCBzYW1wbGUgYXQgZWFjaCBsb29wLgovLyAKcygicGVycmVpdG8iKS5zdHJpYXRlKDEpLmdhaW4oMC41KQovLyBzKCJwZXJyZWl0byIpLnN0cmlhdGUoMTYpCiAgCi8vIGBzbGljZWAgY2hvcHMgc2FtcGxlcyBpbnRvIHRoZSBnaXZlbiBudW1iZXIgb2Ygc2xpY2VzLCAKLy8gdHJpZ2dlcmluZyB0aG9zZSBzbGljZXMgd2l0aCBhIGdpdmVuIHBhdHRlcm4gb2Ygc2xpY2UgbnVtYmVycy4gCi8vIEluc3RlYWQgb2YgYSBudW1iZXIsIGl0IGFsc28gYWNjZXB0cyBhIGxpc3Qgb2YgbnVtYmVycyBmcm9tIDAgCi8vIHRvIDEgdG8gc2xpY2UgYXQgc3BlY2lmaWMgcG9pbnRzLgovLyAKLy8gcygicGVycmVpdG8iKS5zbGljZSg4LCAiMCAwIDAgMCIpCi8vIHMoInBlcnJlaXRvIikuc2xpY2UoOCwgIjAgMSAyIDMiKQovLyBzKCJwZXJyZWl0byIpLnNsaWNlKDgsICIwIDwxIDUgNiA3PiA8NCAxKjMgMj4gPDMgMiA1PiIpCgovLyBgc3BsaWNlYCB3b3JrcyB0aGUgc2FtZSBhcyBzbGljZSwgYnV0IGNoYW5nZXMgdGhlIHBsYXliYWNrIAovLyBzcGVlZCBvZiBlYWNoIHNsaWNlIHRvIG1hdGNoIHRoZSBkdXJhdGlvbiBvZiBpdHMgc3RlcC4KLy8KLy8gcygicGVycmVpdG8iKS5zcGxpY2UoOCwgICIwIDAgMSAxIDIgMyAzIikKLy8gcygicGVycmVpdG8iKS5zcGxpY2UoOCwgICIwIDEgWzIgMyAwXUAyIDMgMEAyIDciKQovLyBzKCJwZXJyZWl0byIpLnNwbGljZSg4LCAgIjxbMCAwXVs8MSAyPiAxXVs8MiAzPiAyXT4gIikKCi8vIGBzY3J1YmAgYWxsb3dzIHlvdSB0byBzY3J1YiBhbiBhdWRpbyBmaWxlIGxpa2UgYSB0YXBlIGxvb3AgCi8vIGJ5IHBhc3NpbmcgdmFsdWVzIHRoYXQgcmVwcmVzZW50cyB0aGUgcG9zaXRpb24gaW4gdGhlIGF1ZGlvIGZpbGUgCi8vIGluIHRoZSBvcHRpb25hbCBhcnJheSBzeW50YXgKLy8KLy8gc2FtcGxlcygnZ2l0aHViOnN3aXRjaGFuZ2VsL3BhZCcpCi8vIHMoInN3cGFkOjIiKS5zY3J1YigiezwwLjEhNCAwLjEhNDoyPiAuMjVAMyAwLjchMiA8MC4yOjIgMC4zOjE%2BfSUxMiIpCgovLyBgc3BlZWRgIGNoYW5nZXMgdGhlIHNwZWVkIG9mIHNhbXBsZSBwbGF5YmFjaywgaS5lLiBhIGNoZWFwIHdheSAKLy8gb2YgY2hhbmdpbmcgcGl0Y2guCi8vIAovLyBzKCJiZCo2Iikuc3BlZWQoIlsxIDIgNCAxIC0yIC00XSIpLmZhc3QoMS41KQo%3D" style="width:100vw; height:50vh" class="embed-full" >
+  </iframe>
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 2 — Control a long sample from FreeSound
+Choose a long sample from FreeSound
+
+Isolate the zones that interest you with the looping tools covered (e.g., `begin`, `end`)
+
+Sequence and process the samples using the control tools just seen (e.g., `slice`, `splice`, `scrub`, `speed`, ...)
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+# [Share it here!](https://flok.cc/s/cart398-lc-st-01)
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="1.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# Break
+Complete your attendance on Moodle
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    <div class="block">
+
+<iframe width="800" height="400" src="https://www.youtube.com/embed/Tjf-NJNfOP4?start=3491" title="Akihiro Kubota. Algorave, Tokyo+Yorkshire. 2023." frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+###### Akihiro Kubota. Algorave, Tokyo+Yorkshire. 2023.
+
+</div>
+
+
+
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+# Pitched material
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+Choose appropriate sound bank: `newnotes`, `arpy`, `stab`, `pluck`, etc.
+
+Sounds in sound banks are not systematically recorded.
+
+Memorize pitch and corresponding n value . 
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+<iframe src="https://strudel.cc/#CnNhbXBsZXMoJ2dpdGh1Yjp0aWRhbGN5Y2xlcy9kaXJ0LXNhbXBsZXMnKQpuKCIwIikKLy9uKCIwIDEgNyA4IDkgMTAgMTEgMTIgMTMgMTQgMiAzIDQgNSA2IikKLy8gbigiMCAxMCIpCi8vIG4oIjAgMTAsMyIpCi8vIG4oIjAgMTAsMyAyIDEgfiIpCi8vIG4oIjAgMTAsMyAyKjIgfiA1IikgIAovLyBuKCIwIDEwLH4gMioyIDUgOCIpIAovLyBuKCJ7MCAxIDIgfiw5IH4gNSA4IDl9IikKICAucygibmV3bm90ZXMiKQogIC8vIC5zKCJhcnB5IikKICAvLyAucygicGx1Y2siKQoKLy8gcygicGx1Y2s6MSoxNiIpLnNwZWVkKCIwLjkgMC45MiAwLjk0IDAuOTYiKQoKLy8gbm90ZShzY2FsZSgiQzM6aW9uaWFuIiwgIlswIDIgNCA3XSoyIikpLnMoInBsdWNrIik%3D" style="width:100vw; height:50vh" class="embed-full" >
+  </iframe>
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 3 — _Your first melody_
+
+Choose a pitched sound
+
+Systematically build melody by add, removing and manipulating the pattern of `n` values
+
+Use alternation, subsequencing, randomization ...
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="1.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# Break
+Complete your attendance on Moodle
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+## Notes and phrases
+
+You not only can retrieve samples and change their pitch. You can also map MIDI numbers to notes.
+
+For this, you can use pitched sounds from the `samples`, `synths`, or `wavetables` lists.
+
+<iframe src="https://strudel.cc/#CnNhbXBsZXMoJ2dpdGh1Yjp0aWRhbGN5Y2xlcy9kaXJ0LXNhbXBsZXMnLCAnZ2l0aHViOmNvbmNvcmRpYS1kY2FydC9zYW1wbGVzLWV4dHJhJykKCm5vdGUoIjMwIH4gNTAiKQovLyBub3RlKCI8MzAgMzAqMj4gfiA1MCIpCi5zKCJ2aWJyYXBob25lX3NvZnQiKQovLyAucygieHlsb3Bob25lX3NvZnRfZmYiKQovLyAucygicGlhbm8iKQoKLy8gbm90ZSgiNjAgfiA2NSIpCi8vIC5zKCJoYXJwIikKLy8gLnMoImdtX3ZpYnJhcGhvbmUiKQovLyAucygid3RfZGlnaXRhbCIpCgovLyBZb3UgY2FuIGFsc28gcGVyZm9ybSBtYXRoZW1hdGljYWwgb3BlcmF0aW9ucwovLyBub3RlKCIwIC4uIDE1Ii5hZGQoIjw2MCA3MiA4ND4iKSkKLy8gLnMoInBpYW5vIikKCi8vIEFuZCB5b3UgY2FuIGFsc28gdXNlIHBpdGNoIG5hbWVzCi8vIG5vdGUoImMgYSBmIGUiLmFkZCgiPDwwIDEyPiA8MTIgMCAwPiAxOSAyND4iKSkKLy8gLnMoInBpYW5vIikKCi8vIEFuZCBhbHNvIGluZGljYXRlIGZsYXQgKGIpIGFuZCBzaGFycHMgKCMpCi8vIG5vdGUoImQgZiMgYSBjIzIiLmFkZCgiPDwwIDEyPiA8MTIgMCAwPiAxOSAyND4iKSkKLy8gLnMoInBpYW5vIikuZmFzdCgyKQoKLy8gQ29vbCB0aGluZyBhYm91dCB1c2luZyBudW1iZXJzIGlzIHRoYXQgeW91IAovLyBjYW4gdXNlIG5vbi1pbnRlZ2VycyBvbmVzIQovLyBub3RlKCIwIDAuMSAwLjIgMC4zIDAuNCAwLjUgMC42IDAuNyAwLjggMC45Ii5hZGQoIjQ4IikpCi8vIC5zKCJwaWFubyIpCgo%3D" style="width:100vw; height:40vh" class="embed-full" >
+  </iframe>
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 4 — _Melody with note names and non-integer numbers_
+
+Create two interlocked melodies, one using note names ( `c, d, e, ... b`), and other combining integer and float numbers. 
+
+Both melodies will play together (use `stack` or `$`)
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 5 — _Melody and rhythm_
+
+Work in groups of three
+
+Each group distributes roles as follows:
+
+One person focuses on **percussion**, designing and performing rhythmic material.
+
+One person develops a **low-register melody**, shaping pitch, rhythm, and articulation.
+
+One person develops a **high-register melody**, contrasting or complementing the low part.
+
+All parts should be played live and adjusted in response to one another.
+
+Use alternation, subsequencing, and randomization techniques.
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 3 — _Melody and rhythm_
+
+### Flok REPLs
+
+
+|     |                                                      |     |                                                      |
+| --- | ---------------------------------------------------- | --- | ---------------------------------------------------- |
+|     | [Group 1](https://flok.cc/s/cart398-lc-st-st-st-01#) |     | [Group 6](https://flok.cc/s/cart398-lc-st-st-st-06)  |
+|     | [Group 2](https://flok.cc/s/cart398-lc-st-st-st-02)  |     | [Group 7](https://flok.cc/s/cart398-lc-st-st-st-07)  |
+|     | [Group 3](https://flok.cc/s/cart398-lc-st-st-st-03)  |     | [Group 8](https://flok.cc/s/cart398-lc-st-st-st-08)  |
+|     | [Group 4](https://flok.cc/s/cart398-lc-st-st-st-04)  |     | [Group 9](https://flok.cc/s/cart398-lc-st-st-st-09)  |
+|     | [Group 5](https://flok.cc/s/cart398-lc-st-st-st-05)  |     | [Group 10](https://flok.cc/s/cart398-lc-st-st-st-10) |
+|     |                                                      |     |                                                      |
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA live share 
+
+Each group performs 2 minutes; every member must execute at least one live edit while audio continues.
+
+Live arrangement muting/unmuting parts.
+
+Use code edits to control the density of the pattern.
+
+Rehearse an A→B→A form .
+
+## [Share it here](https://flok.cc/s/past-harlequin-alligator-87c2d6c8#)
+
+Wait for your turn!
+
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## [One patch a day](https://moodle.concordia.ca/moodle/mod/assign/view.php?id=4448614) - Always!
+
+Use the following repository as a template: 
+
+https://github.com/concordia-dcart/CART398-LC-OPaD
+
+Don't fork, use ”Use this template” to ”Create a new repository”, instead. Make it public.
+
+Add the URL of your repository to the following spreadsheet
+
+[Spreadsheet](https://docs.google.com/spreadsheets/d/1AQA6Kc5pd2JnfIX-sxv50vC-xLsh6W5ABWXyIgsLzG4/edit?usp=drive_link)
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section></div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/obsidian-markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script src="plugin/mermaid/mermaid.js"></script>
+    <script src="plugin/chart/chart.umd.js"></script>
+    <script src="plugin/chart/plugin.js"></script>
+    <script src="plugin/customcontrols/plugin.js"></script>
+
+    <script>
+        function extend() {
+            const target = {};
+            for (let i = 0; i < arguments.length; i++) {
+                const source = arguments[i];
+                for (const key in source) {
+                    if (source.hasOwnProperty(key)) {
+                        target[key] = source[key];
+                    }
+                }
+            }
+            return target;
+        }
+
+        function isLight(color) {
+            let hex = color.replace('#', '');
+
+            // convert #fff => #ffffff
+            if (hex.length == 3) {
+                hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+            }
+
+            const c_r = parseInt(hex.substr(0, 2), 16);
+            const c_g = parseInt(hex.substr(2, 2), 16);
+            const c_b = parseInt(hex.substr(4, 2), 16);
+            const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+            return brightness > 155;
+        }
+
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--r-background-color').trim();
+
+        if (isLight(bgColor)) {
+            document.body.classList.add('has-light-background');
+        } else {
+            document.body.classList.add('has-dark-background');
+        }
+
+        // default options to init reveal.js
+        const defaultOptions = {
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            transition: 'default', // none/fade/slide/convex/concave/zoom
+            plugins: [
+                ObsidianMarkdown,
+                RevealHighlight,
+                RevealZoom,
+                RevealNotes,
+                RevealMath.KaTeX,
+                RevealMermaid,
+                RevealChart,
+                RevealCustomControls,
+            ],
+            allottedTime: "120",
+
+            katex: {
+                local: 'plugin/math/katex',
+                extensions: ["mhchem"],
+            },
+            markdown: {
+                gfm: true,
+            },
+            mermaid: {
+                theme: isLight(bgColor) ? 'default' : 'dark',
+            },
+            customcontrols: {
+                controls: [
+                ]
+            },
+        };
+
+        if ( pageInIframe() ) {
+            defaultOptions.scrollActivationWidth = 5;
+        }
+
+        // options from URL query string
+        const queryOptions = Reveal().getQueryHash() || {};
+
+        const options = extend(defaultOptions, {"controls":true,"progress":true,"slideNumber":true,"center":true,"transition":"fade","transitionSpeed":"default","width":1200,"height":700,"margin":0.04,"controlsLayout":"bottom-right","disableLayout":false,"previewLinks":true}, queryOptions);
+    </script>
+
+    <script>
+      /**
+       * KaTeX Equation Numbering Note
+       * 
+       * KaTeX maintains a global equation counter for \begin{equation} environments.
+       * When navigating between slides, reveal.js math plugin may re-render math, causing 
+       * equation numbers to change randomly.
+       * 
+       * Note: Regular $$ blocks don't have equation numbers - only \begin{equation} does.
+       * 
+       * If you experience issues with equation numbers changing:
+       * Use manual \tag{} commands: \begin{equation}\tag{1} ... \end{equation}
+       */
+      
+      Reveal.initialize(options);
+    </script>
+    <!-- created with Slides Extended reveal.html template -->
+</body>
+</html>
