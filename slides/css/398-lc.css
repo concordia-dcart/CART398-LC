@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nata+Sans:wght@100..900&family=Outfit:wght@100..900&display=swap');
+<script type="module" src="https://cdn.jsdelivr.net/npm/hydra-element"></script>
 
 
 /* .reveal * {
@@ -20,10 +21,24 @@
 
 .reveal pre {
   color: chocolate;
+  font-size: 1em;
+  background-color: #1a1a2e;
+  border-radius: 6px;
+  padding: 0.5em 0.75em;
+}
+
+.reveal pre code {
+  font-size: 1em;
+  background-color: transparent;
+  color: inherit;
 }
 
 .reveal code {
   color: chocolate;
+  font-size: 1em;
+  background-color: #1a1a2e;
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
 }
 
 #inner {  
