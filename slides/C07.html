@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title></title>
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="css/slides-extended.css" />
+    <link rel="stylesheet" href="dist/theme/night.css" id="theme" />
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css" />
+    <link rel="stylesheet" href="plugin/customcontrols/style.css">
+
+
+    <link rel="stylesheet" href="css/398-lc.css" />
+
+    <script defer src="dist/fontawesome/all.min.js"></script>
+
+    <script type="text/javascript">
+        function pageInIframe() {
+            return (window.location !== window.parent.location);
+        }
+
+        let forgetPop = true;
+        function onPopState(event) {
+            if(forgetPop){
+                forgetPop = false;
+            } else if( pageInIframe()) {
+                parent.postMessage(event.target.location.href, "app://obsidian.md");
+            }
+        }
+        window.onpopstate = onPopState;
+        window.onmessage = event => {
+            if(event.data == "reload"){
+                window.document.location.reload();
+            }
+            forgetPop = true;
+        }
+
+        function fitElements() {
+            const itemsToFit = document.getElementsByClassName('fitText');
+            for (const item in itemsToFit) {
+                if (Object.hasOwnProperty.call(itemsToFit, item)) {
+                    const element = itemsToFit[item];
+                    fitElement(element, 1, 1000);
+                    element.classList.remove('fitText');
+                }
+            }
+        }
+
+        function fitElement(element, start, end) {
+
+            let size = (end + start) / 2;
+            element.style.fontSize = `${size}px`;
+
+            if (Math.abs(start - end) < 1) {
+                while (element.scrollHeight > element.offsetHeight) {
+                    size--;
+                    element.style.fontSize = `${size}px`;
+                }
+                return;
+            }
+
+            if (element.scrollHeight > element.offsetHeight) {
+                fitElement(element, start, size);
+            } else {
+                fitElement(element, size, end);
+            }
+        }
+
+        document.onreadystatechange = () => {
+            fitElements();
+            if (document.readyState === 'complete') {
+                if (pageInIframe() && window.location.href.indexOf("?export") != -1){
+                    parent.postMessage(event.target.location.href, "app://obsidian.md");
+                }
+                if (window.location.href.indexOf("print-pdf") != -1){
+                    let stateCheck = setInterval(() => {
+                        clearInterval(stateCheck);
+                        window.print();
+                    }, 250);
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides"><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="1.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.25" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; font-size: 50%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+</div>
+
+
+
+
+
+
+
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+
+
+
+  #### CART 398 Special topics in Computation Arts
+  # Live coding: _Code as performance_
+
+  ### Prof. Gabriel Vigliensoni
+
+<br><br>
+
+
+  ##### Winter 2026 - Class 07
+  
+  ##### Department of Design and Computation Arts
+  
+  ##### Concordia University
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Recap last session
+
+Multichannel setup (e.g., producing, performing, processing)
+
+Working with MIDI
+
+Arranging structures
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# Hydra Video Synth
+### Session 1: Sources, Transforms & Signal Flow
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.5" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/olivia-jack-01.png" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 100%; width: 50%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start" align="left">
+
+<mark style="background-color:grey; color:white; font-style:italic;">
+
+</mark>
+</div>
+
+<div class="" style="position: absolute; left: NaN%; top: 0%; height: undefined%; width: undefined%; display: flex; flex-direction: column; align-items: center; justify-content: center" ="100 6">
+
+
+</div>
+
+
+<div class="" style="position: absolute; left: 3%; top: 15%; height: 70%; width: 64%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start" align="left">
+
+
+</div>
+
+<div class="" style="position: absolute; left: 75%; top: 0%; height: 35%; width: 25%; display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-start" align="right">
+
+<div class="block">
+
+<img src="https://media.vigliensoni.com/clips/CART398-LC/olivia-jack-02.png" alt="Olivia" style="object-fit: scale-down">
+
+
+</div>
+
+
+
+</div>
+
+<div class="" style="position: absolute; left: 70%; top: 55%; height: 70%; width: 40%; display: flex; flex-direction: column; align-items: center; justify-content: flex-start" align="top">
+
+
+</div>
+
+<div class="" style="opacity: 25%; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" align="center">
+
+
+</div>
+
+<div class="" style="opacity: 100%; position: absolute; left: 2%; top: 25%; height: 50%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" align="center">
+
+
+</div>
+
+<div class="" style="position: absolute; left: 75%; top: 15%; height: 70%; width: 20%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<!-- .element: style="font-size: 20px" -->
+</div>
+
+
+
+<div class="has-dark-background" style="background-color: indianred; position: absolute; left: 0%; top: 100%; height: 0%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:white; font-size:50%">
+
+</mark>
+</div>
+
+
+<div class="" style="font-size: 66%; color: white; position: absolute; left: 0%; top: 80%; height: 20%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+</div>
+
+
+
+
+## What is Hydra?
+
+- Browser-based live coding environment for real-time video synthesis
+- Created by Olivia Jack
+- Runs entirely in the browser — no installation needed
+- Inspired by **modular synthesis**: connect functions with `.` instead of cables
+- Everything is JavaScript + GLSL under the hood
+
+
+
+
+
+🔗 [hydra.ojack.xyz](https://hydra.ojack.xyz)
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjt4xeXN59lBgO4Si_gzt5BBbnmV-7pIemO6EnM39VfY677AM3XHEwSC5fo4jXjgFSJk4zY2WW1AgEbjJGRyL263akf56P9aUQO-vNSV1FoI77StVYgB2_aQizEuvFXn_oRKFoQ/s1600/1.jpg" alt="Modular synthesizer" style="object-fit: scale-down">
+
+###### Image taken from [Matrix Synth](https://www.matrixsynth.com/2014/04/lzx-video-modular-euro-doepfer-format.html)
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<iframe src="https://lzxindustries.net/" style="width:100%;height:100%;border:none;margin:0;padding:0;display:block;"></iframe>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<iframe src="https://lumen-app.com/" style="width:100%;height:100%;border:none;margin:0;padding:0;display:block;"></iframe>
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## The Modular Synthesis Analogy
+
+Hydra mirrors **modular synthesis** — but in code:
+```
+source → transforms → output
+osc()   .rotate()    .out()
+```
+
+- **Source** = signal generator (oscillator, noise, shape...)
+- **Transform** = module (geometry, color, effects)
+- **out()** = speaker / monitor output
+
+> Functions are connected with `.` (dot notation)  
+> <br>
+>  Arguments = knob positions
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## The Web Editor
+
+Toolbar buttons (top right):
+
+| Button           | Action                                |
+| ---------------- | ------------------------------------- |
+| ▶ Run            | Execute all code (`ctrl+shift+enter`) |
+| ↑ Upload         | Save sketch to gallery                |
+| 🗑 Clear         | Reset environment                     |
+| 🎲 Random sketch | Load community examples               |
+| 🎲 Random change | Auto-modify a single value            |
+| ? Info           | Help and links                        |
+
+> Tip: `ctrl+shift+f` auto-formats your code
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<iframe src="https://hydra.ojack.xyz/?code=b3NjKCklMEElMDkub3V0KCklM0IlMEElMEElMkYlMkYlMjBBZGQlMjBwYXJhbWV0ZXJzJTBBJTJGJTJGJTIwb3NjKGZyZXF1ZW5jeSUyQyUyMHN5bmMlMkMlMjBvZmZzZXQpJTBBJTJGJTJGb3NjKDEwJTJDJTIwMC4xJTJDJTIwMC41KSUwQSUyRiUyRiUwOS5vdXQoKSUzQiUwQSUwQSUyRiUyRiUyMENoYWluJTIwYSUyMHRyYW5zZm9ybSUwQSUyRiUyRiUyMG9zYygxMCUyQyUyMDAuMSUyQyUyMDAuNSklMEElMkYlMkYlMDkucm90YXRlKDAuOTExKSUwQSUyRiUyRiUwOS5vdXQoKSUzQiUwQSUwQSUyRiUyRiUyMEtlZXAlMjBhZGRpbmclM0ElMEElMkYlMkYlMjBvc2MoMTAlMkMlMjAwLjElMkMlMjAwLjUpJTBBJTJGJTJGJTA5LnJvdGF0ZSgwLjUpJTBBJTJGJTJGJTA5LnBpeGVsYXRlKDIwJTJDJTIwMjApJTBBJTJGJTJGJTA5Lm91dCgpJTNC" style="width:100%;height:100%;border:none;margin:0;padding:0;display:block;"></iframe>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Your First Patch
+```js
+osc().out()
+```
+
+Add parameters:
+```js
+osc(10, 0.1, 0.5).out()
+// osc(frequency, sync, offset)
+```
+
+Chain a transform:
+```js
+osc(10, 0.1, 0.5).rotate(0.5).out()
+```
+
+Keep adding:
+```js
+osc(10, 0.1, 0.5).rotate(0.5).pixelate(20, 20).out()
+```
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Function Types
+
+| Type | Role | Example |
+|------|------|---------|
+| **Source** | Generates signal | `osc()`, `noise()` |
+| **Geometry** | Transforms spatial coords | `.rotate()`, `.kaleid()` |
+| **Color** | Transforms color values | `.color()`, `.contrast()` |
+| **Blend** | Combines two sources (color) | `.blend()`, `.add()` |
+| **Modulate** | Uses one source to warp another | `.modulate()`, `.modulateRotate()` |
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Sources
+
+### `osc(frequency, sync, offset)`
+Visual oscillator — stripes going from black to white.
+```js
+osc(60, 0.1, 0).out()
+```
+
+### `solid(r, g, b, a)`
+Flat color fill.
+```js
+solid(1, 0, 0).out()  // solid red
+```
+
+### `noise(scale, offset)`
+2D Perlin noise — organic texture.
+```js
+noise(10, 0.1).out()
+```
+
+> ⚠️ `noise` outputs both positive and negative values
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## More Sources
+
+### `voronoi(scale, speed, blending)`
+Cellular / Voronoi diagram shapes.
+```js
+voronoi(5, 0.3, 0.3).out()
+```
+
+### `shape(sides, radius, smoothing)`
+Simple polygons.
+```js
+shape(3, 0.3, 0.01).out()   // triangle
+shape(6, 0.4, 0.01).out()   // hexagon
+```
+
+### `gradient(speed)`
+Gradient that cycles through colors.
+```js
+gradient(0.5).out()
+```
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Geometry Transforms
+
+Chain after any source:
+```js
+osc(10).rotate(Math.PI / 4).out()    // rotate 45°
+osc(10).kaleid(6).out()              // kaleidoscope
+osc(10).pixelate(20, 20).out()       // pixelate
+osc(10).repeat(3, 3).out()           // tile
+osc(10).scale(0.5).out()             // scale
+```
+
+> All geometry transforms have a corresponding **modulate** version:
+> `.rotate()` → `.modulateRotate()`
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Outputs
+
+Hydra has **4 virtual buffers**: `o0`, `o1`, `o2`, `o3`
+```js
+osc().out()          // renders to o0 (default)
+osc().out(o1)        // renders to o1
+shape().out(o2)      // renders to o2
+
+render()             // shows all 4 outputs split-screen
+render(o2)           // shows o2 fullscreen
+```
+
+> Trick: prepare multiple buffers, switch between them live
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## External Sources: Webcam
+```js
+s0.initCam()         // initialize camera into source slot s0
+src(s0).out()        // pipe it to screen
+```
+
+Add transforms:
+```js
+s0.initCam()
+src(s0).rotate(0.1).kaleid(4).out()
+```
+
+Multiple cameras:
+```js
+s0.initCam(0)
+s1.initCam(1)
+```
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Blending
+
+Combine two sources by **color**:
+```js
+osc(10).out(o0)
+shape(4).out(o1)
+
+src(o0).blend(o1, 0.5).out()
+```
+
+Other blend modes: `.add()`, `.mult()`, `.diff()`, `.layer()`
+
+> Similar to Photoshop/GIMP blend modes
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Modulation
+
+Use one source to **warp the geometry** of another:
+```js
+osc(10).out(o0)
+noise(3).out(o1)
+
+src(o0).modulate(o1, 0.1).out()
+// noise displaces the oscillator's pixel coordinates
+```
+
+- Red channel → X displacement
+- Green channel → Y displacement
+- Does **not** change color/luminosity — only geometry
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Modulation vs Blending
+
+| | Blending | Modulation |
+|-|---------|-----------|
+| What combines | **Colors** | **Coordinates** |
+| Result | Mix of colors | Warping / distortion |
+| Example | `.blend(o1)` | `.modulate(o1)` |
+| Analogy | Mixing paint | Looking through warped glass |
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Errors & Comments
+
+**Errors** appear in red at the bottom-left of the screen:
+```
+Unexpected token '.'
+```
+Usually a typo or syntax issue. Fix it and re-run.
+
+**Comments** — ignored by the engine:
+```js
+// This is a comment — great for notes during a performance
+osc(10).out()  // you can also comment inline
+```
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Saving Sketches
+
+**As a URL**: Every time you run code, Hydra updates the URL automatically. Copy it to share or revisit.
+
+**To the gallery**: Use the upload button → sketch + screenshot posted publicly.
+
+> Use browser back/forward to navigate patch history
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Session 1 Practice
+
+1. Start with `osc().out()` — tweak frequency, sync, offset
+2. Chain at least 3 transforms
+3. Use `noise()` and `shape()` as sources
+4. Send visuals to `o0` and `o1`, use `render()` to compare
+5. Initialize webcam, add transforms
+6. Blend two outputs
+7. Modulate one output with another — observe the difference from blending
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Key Takeaways
+
+- Hydra = modular synthesis in the browser
+- Signal flow: **source → transforms → `.out()`**
+- 5 function types: source, geometry, color, blend, modulate
+- 4 outputs (`o0`–`o3`), 4 external source slots (`s0`–`s3`)
+- Save with URLs; share with the gallery
+
+🔗 Reference: [hydra.ojack.xyz/api](https://hydra.ojack.xyz/api)
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="1.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# Break
+Complete your attendance on Moodle
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+## ICA —
+“Score the performance (without code)” (teams of 3, 10 min)
+
+Task: write a performance plan as a sequence of actions over time 
+
+For example:
+- Define roles
+- Minute 1: establish pulse; 
+- M2: introduce a periodic edit;
+- M3: timbral opening; 
+- M4: controlled randomness
+- M5: Decrease number of elements
+
+Constraints: 
+- describe operations, not sounds.
+
+Deliverable: a one-page performance script.
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+## ICA 2 — 
+
+Task: with your performance plan/score at hand, program it using arrange
+
+Since we are collaborating across machines, do not use MIDI
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>### Flok New REPLs (use these)
+
+
+|     |                                                                |     |                                                                |
+| --- | -------------------------------------------------------------- | --- | -------------------------------------------------------------- |
+|     | [Group 1](https://flok.plasm.studio/s/cart398-lc-st-st-st-01#) |     | [Group 6](https://flok.plasm.studio/s/cart398-lc-st-st-st-06)  |
+|     | [Group 2](https://flok.plasm.studio/s/cart398-lc-st-st-st-02)  |     | [Group 7](https://flok.plasm.studio/s/cart398-lc-st-st-st-07)  |
+|     | [Group 3](https://flok.plasm.studio/s/cart398-lc-st-st-st-03)  |     | [Group 8](https://flok.plasm.studio/s/cart398-lc-st-st-st-08)  |
+|     | [Group 4](https://flok.plasm.studio/s/cart398-lc-st-st-st-04)  |     | [Group 9](https://flok.plasm.studio/s/cart398-lc-st-st-st-09)  |
+|     | [Group 5](https://flok.plasm.studio/s/cart398-lc-st-st-st-05)  |     | [Group 10](https://flok.plasm.studio/s/cart398-lc-st-st-st-10) |
+|     |                                                                |     |                                                                |
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+## [One patch a day](https://moodle.concordia.ca/moodle/mod/assign/view.php?id=4448614) - Always!
+
+Use the following repository as a template: 
+
+https://github.com/concordia-dcart/CART398-LC-OPaD
+
+Don't fork, use ”Use this template” to ”Create a new repository”, instead. Make it public.
+
+Add the URL of your repository to the following spreadsheet
+
+[Spreadsheet](https://docs.google.com/spreadsheets/d/1AQA6Kc5pd2JnfIX-sxv50vC-xLsh6W5ABWXyIgsLzG4/edit?usp=drive_link)
+</div></script></section></div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/obsidian-markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script src="plugin/mermaid/mermaid.js"></script>
+    <script src="plugin/chart/chart.umd.js"></script>
+    <script src="plugin/chart/plugin.js"></script>
+    <script src="plugin/customcontrols/plugin.js"></script>
+
+    <script>
+        function extend() {
+            const target = {};
+            for (let i = 0; i < arguments.length; i++) {
+                const source = arguments[i];
+                for (const key in source) {
+                    if (source.hasOwnProperty(key)) {
+                        target[key] = source[key];
+                    }
+                }
+            }
+            return target;
+        }
+
+        function isLight(color) {
+            let hex = color.replace('#', '');
+
+            // convert #fff => #ffffff
+            if (hex.length == 3) {
+                hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+            }
+
+            const c_r = parseInt(hex.substr(0, 2), 16);
+            const c_g = parseInt(hex.substr(2, 2), 16);
+            const c_b = parseInt(hex.substr(4, 2), 16);
+            const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+            return brightness > 155;
+        }
+
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--r-background-color').trim();
+
+        if (isLight(bgColor)) {
+            document.body.classList.add('has-light-background');
+        } else {
+            document.body.classList.add('has-dark-background');
+        }
+
+        // default options to init reveal.js
+        const defaultOptions = {
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            transition: 'default', // none/fade/slide/convex/concave/zoom
+            plugins: [
+                ObsidianMarkdown,
+                RevealHighlight,
+                RevealZoom,
+                RevealNotes,
+                RevealMath.KaTeX,
+                RevealMermaid,
+                RevealChart,
+                RevealCustomControls,
+            ],
+            allottedTime: "120",
+
+            katex: {
+                local: 'plugin/math/katex',
+                extensions: ["mhchem"],
+            },
+            markdown: {
+                gfm: true,
+            },
+            mermaid: {
+                theme: isLight(bgColor) ? 'default' : 'dark',
+            },
+            customcontrols: {
+                controls: [
+                ]
+            },
+        };
+
+        if ( pageInIframe() ) {
+            defaultOptions.scrollActivationWidth = 5;
+        }
+
+        // options from URL query string
+        const queryOptions = Reveal().getQueryHash() || {};
+
+        const options = extend(defaultOptions, {"controls":true,"progress":true,"slideNumber":true,"center":true,"transition":"fade","transitionSpeed":"default","width":1200,"height":700,"margin":0.04,"controlsLayout":"bottom-right","disableLayout":false,"previewLinks":true}, queryOptions);
+    </script>
+
+    <script>
+      /**
+       * KaTeX Equation Numbering Note
+       * 
+       * KaTeX maintains a global equation counter for \begin{equation} environments.
+       * When navigating between slides, reveal.js math plugin may re-render math, causing 
+       * equation numbers to change randomly.
+       * 
+       * Note: Regular $$ blocks don't have equation numbers - only \begin{equation} does.
+       * 
+       * If you experience issues with equation numbers changing:
+       * Use manual \tag{} commands: \begin{equation}\tag{1} ... \end{equation}
+       */
+      
+      Reveal.initialize(options);
+    </script>
+    <!-- created with Slides Extended reveal.html template -->
+</body>
+</html>
