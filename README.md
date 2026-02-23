@@ -9,4 +9,4 @@ Website for CART398 — Live Coding
 - [Week 04](https://concordia-dcart.github.io/CART398-LC/slides/C04#/). Scales. Transformations. 
 - [Week 05](https://concordia-dcart.github.io/CART398-LC/slides/C05#/). Signals. Control. Strudel file.
 - [Week 06](https://concordia-dcart.github.io/CART398-LC/slides/C06#/). Arrangements. MIDI and multichannel setup.
-- [Week 07](). Hydra. Sources. Transforms.
+- [Week 07](https://concordia-dcart.github.io/CART398-LC/slides/C07#/). Hydra. Sources. Transforms.
