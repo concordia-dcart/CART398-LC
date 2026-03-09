@@ -1,0 +1,2518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title></title>
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="css/slides-extended.css" />
+    <link rel="stylesheet" href="dist/theme/night.css" id="theme" />
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css" />
+    <link rel="stylesheet" href="plugin/customcontrols/style.css">
+
+
+    <link rel="stylesheet" href="css/398-lc.css" />
+
+    <script defer src="dist/fontawesome/all.min.js"></script>
+
+    <script type="text/javascript">
+        function pageInIframe() {
+            return (window.location !== window.parent.location);
+        }
+
+        let forgetPop = true;
+        function onPopState(event) {
+            if(forgetPop){
+                forgetPop = false;
+            } else if( pageInIframe()) {
+                parent.postMessage(event.target.location.href, "app://obsidian.md");
+            }
+        }
+        window.onpopstate = onPopState;
+        window.onmessage = event => {
+            if(event.data == "reload"){
+                window.document.location.reload();
+            }
+            forgetPop = true;
+        }
+
+        function fitElements() {
+            const itemsToFit = document.getElementsByClassName('fitText');
+            for (const item in itemsToFit) {
+                if (Object.hasOwnProperty.call(itemsToFit, item)) {
+                    const element = itemsToFit[item];
+                    fitElement(element, 1, 1000);
+                    element.classList.remove('fitText');
+                }
+            }
+        }
+
+        function fitElement(element, start, end) {
+
+            let size = (end + start) / 2;
+            element.style.fontSize = `${size}px`;
+
+            if (Math.abs(start - end) < 1) {
+                while (element.scrollHeight > element.offsetHeight) {
+                    size--;
+                    element.style.fontSize = `${size}px`;
+                }
+                return;
+            }
+
+            if (element.scrollHeight > element.offsetHeight) {
+                fitElement(element, start, size);
+            } else {
+                fitElement(element, size, end);
+            }
+        }
+
+        document.onreadystatechange = () => {
+            fitElements();
+            if (document.readyState === 'complete') {
+                if (pageInIframe() && window.location.href.indexOf("?export") != -1){
+                    parent.postMessage(event.target.location.href, "app://obsidian.md");
+                }
+                if (window.location.href.indexOf("print-pdf") != -1){
+                    let stateCheck = setInterval(() => {
+                        clearInterval(stateCheck);
+                        window.print();
+                    }, 250);
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides"><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="1.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.25" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; font-size: 50%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+</div>
+
+
+
+
+
+
+
+<!-- .slide: data-auto-animate="true" -->
+
+
+
+
+
+  #### CART 398 Special topics in Computation Arts
+  # Live coding: _Code as performance_
+
+  ### Prof. Gabriel Vigliensoni
+
+<br><br>
+
+
+  ##### Winter 2026 - Class 08
+
+  ##### Department of Design and Computation Arts
+
+  ##### Concordia University
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Recap last session
+
+Sources: `osc()`, `noise()`, `voronoi()`, `shape()`, `gradient()`
+
+Geometry: `.rotate()`, `.scale()`
+
+Outputs: `o0`–`o3`, `render()`
+
+Signals and patterns: arrow functions, arrays, `P()`
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Hydra Video Synth
+### Session 2: Blending, Modulation & Composition
+
+Warning: In the next half of this course, <mark>you may be exposed to flashing lights and rapidly changing visual patterns</mark> that could affect individuals with photosensitive epilepsy or other visual sensitivities. If this applies to you, please take appropriate precautions or step away from the screen.
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Color Transforms
+### Shaping the signal's color
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## What are color transforms?
+
+Color transforms **operate on the RGB values** of each pixel — they shift, scale, and remap the output of a source or chain
+
+```
+source → geometry → color transform → .out()
+osc()   .rotate()   .brightness(0.5)   .out()
+```
+
+> Unlike geometry transforms, color transforms don't move pixels — they change their values
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### `.brightness()` & `.contrast()`
+```js
+brightness( amount = 0.4 )
+contrast( amount = 1.6 )
+```
+
+`.brightness()` shifts luminance. Values > 0 brighten, < 0 darken.
+`.contrast()` stretches or compresses the tonal range.
+
+```js
+osc(10, 0.1, 1).brightness(0.5).out()       // brighter
+osc(10, 0.1, 1).brightness(-0.3).out()      // darker
+
+osc(10, 0.1, 1).contrast(3).out()           // high contrast
+osc(10, 0.1, 1).contrast(0.2).out()         // washed out
+
+osc(10, 0.1, 1).brightness(0.2).contrast(2).out()  // chain them
+```
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<iframe src="https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gQ29sb3IgdHJhbnNmb3Jtcwpvc2MoMTAsIDAuMSwgMSkub3V0KCkKCi8vIGJyaWdodG5lc3MoYW1vdW50KTogc2hpZnQgYnJpZ2h0bmVzcwovLyBvc2MoMTAsIDAuMSwgMSkuYnJpZ2h0bmVzcygwLjUpLm91dCgpCi8vIG9zYygxMCwgMC4xLCAxKS5icmlnaHRuZXNzKC0wLjMpLm91dCgpCgovLyBjb250cmFzdChhbW91bnQpOiBpbmNyZWFzZS9kZWNyZWFzZSBjb250cmFzdAovLyBvc2MoMTAsIDAuMSwgMSkuY29udHJhc3QoMykub3V0KCkKLy8gb3NjKDEwLCAwLjEsIDEpLmNvbnRyYXN0KDAuMikub3V0KCkKCi8vIHNhdHVyYXRlKGFtb3VudCk6IGNvbG9yIHNhdHVyYXRpb24KLy8gb3NjKDEwLCAwLjEsIDEpLnNhdHVyYXRlKDUpLm91dCgpCi8vIG9zYygxMCwgMC4xLCAxKS5zYXR1cmF0ZSgwKS5vdXQoKQoKLy8gaHVlKGFtb3VudCk6IHJvdGF0ZSBodWUKLy8gb3NjKDEwLCAwLjEsIDEpLmh1ZSgwLjUpLm91dCgpCgovLyBjb2xvcmFtYTogc2hpZnQgYWxsIGNvbG9yIGNoYW5uZWxzCi8vIG9zYygxMCwgMC4xLCAxKS5jb2xvcmFtYSgwLjEpLm91dCgpCg==" allow="autoplay; camera; microphone; display-capture" allowfullscreen style="width:100%;height:100%;border:none;margin:0;padding:0;display:block;"></iframe>
+
+[Color transforms patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gQ29sb3IgdHJhbnNmb3Jtcwpvc2MoMTAsIDAuMSwgMSkub3V0KCkKCi8vIGJyaWdodG5lc3MoYW1vdW50KTogc2hpZnQgYnJpZ2h0bmVzcwovLyBvc2MoMTAsIDAuMSwgMSkuYnJpZ2h0bmVzcygwLjUpLm91dCgpCi8vIG9zYygxMCwgMC4xLCAxKS5icmlnaHRuZXNzKC0wLjMpLm91dCgpCgovLyBjb250cmFzdChhbW91bnQpOiBpbmNyZWFzZS9kZWNyZWFzZSBjb250cmFzdAovLyBvc2MoMTAsIDAuMSwgMSkuY29udHJhc3QoMykub3V0KCkKLy8gb3NjKDEwLCAwLjEsIDEpLmNvbnRyYXN0KDAuMikub3V0KCkKCi8vIHNhdHVyYXRlKGFtb3VudCk6IGNvbG9yIHNhdHVyYXRpb24KLy8gb3NjKDEwLCAwLjEsIDEpLnNhdHVyYXRlKDUpLm91dCgpCi8vIG9zYygxMCwgMC4xLCAxKS5zYXR1cmF0ZSgwKS5vdXQoKQoKLy8gaHVlKGFtb3VudCk6IHJvdGF0ZSBodWUKLy8gb3NjKDEwLCAwLjEsIDEpLmh1ZSgwLjUpLm91dCgpCgovLyBjb2xvcmFtYTogc2hpZnQgYWxsIGNvbG9yIGNoYW5uZWxzCi8vIG9zYygxMCwgMC4xLCAxKS5jb2xvcmFtYSgwLjEpLm91dCgpCg==)
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### `.saturate()` & `.hue()`
+```js
+saturate( amount = 2 )
+hue( amount = 0.4 )
+```
+
+`.saturate()` controls color intensity. 0 = grayscale, > 1 = vivid.
+`.hue()` rotates the hue wheel (0–1 = full rotation).
+
+```js
+osc(10, 0.1, 1).saturate(5).out()           // hyper-saturated
+osc(10, 0.1, 1).saturate(0).out()           // grayscale
+
+osc(10, 0.1, 1).hue(0.5).out()              // 180° hue rotation
+osc(10, 0.1, 1).hue(() => time * 0.1).out() // hue cycling over time
+```
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### `.colorama()` & `.color()`
+```js
+colorama( amount = 0.005 )
+color( r, g, b, a )
+```
+
+`.colorama()` shifts all channels by the same small amount — creates prismatic/rainbow splitting.
+`.color()` multiplies each channel independently — tints the output.
+
+```js
+osc(10, 0.1, 1).colorama(0.1).out()                    // prismatic shift
+osc(10, 0.1, 1).colorama(() => Math.sin(time) * 0.2).out()  // animated
+
+osc(10, 0.1, 1).color(1, 0, 0).out()                   // red tint
+osc(10, 0.1, 1).color(0, 1, 1).out()                   // cyan tint
+noise(3).color(1, 0.5, 0).out()                        // warm noise
+```
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Blend Functions
+### Combining two sources into one
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## What are blend functions?
+
+Blend functions **combine two textures pixel-by-pixel** using a mathematical operation
+
+```
+source.blend_function( other_source, amount ).out()
+osc()  .add(          noise(),        0.5   ).out()
+```
+
+- The **calling source** is texture A
+- The **argument** is texture B
+- `amount` controls the mix weight (0–1)
+
+> Think of these as the **mixer** in your modular rack
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+## Blend Function Types
+
+| Function | Operation | Effect |
+| -------- | --------- | ------ |
+| `.add()` | A + B | Brightens; can blow out |
+| `.mult()` | A × B | Darkens; masks dark areas |
+| `.diff()` | \|A − B\| | High contrast edge detection |
+| `.blend()` | lerp(A, B, t) | Smooth crossfade |
+| `.layer()` | alpha composite | B over A using alpha channel |
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### `.add()` & `.mult()`
+```js
+add( texture, amount = 1 )
+mult( texture, amount = 1 )
+```
+
+```js
+// add: brightens overlapping areas
+osc(10, 0.1, 1).add(noise(3), 0.5).out()
+osc(10, 0.1, 1).add(shape(3, 0.4, 0.01).color(1, 0, 0), 1).out()
+
+// mult: mask — only bright where both are bright
+osc(10, 0.1, 1).mult(noise(3), 1).out()
+osc(10, 0.1, 1).mult(shape(4, 0.5, 0.01), 1).out()
+```
+
+> `.add()` is additive synthesis for visuals; `.mult()` is ring modulation
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### `.diff()` & `.blend()` & `.layer()`
+```js
+diff( texture )
+blend( texture, amount = 0.5 )
+layer( texture )
+```
+
+```js
+// diff: absolute difference — great for edges and stroboscopic effects
+osc(10, 0.1, 1).diff(osc(11, 0.1, 1)).out()
+osc(10, 0.1, 1).diff(noise(3)).out()
+
+// blend: linear crossfade between two sources
+osc(10, 0.1, 1).blend(noise(3), 0.5).out()
+osc(10, 0.1, 1).blend(noise(3), () => Math.sin(time) * 0.5 + 0.5).out()
+
+// layer: composite using alpha (B over A)
+shape(4, 0.3, 0.01).color(1, 0, 0, 1)
+  .layer(shape(6, 0.2, 0.01).color(0, 1, 0, 1))
+  .out()
+```
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<iframe src="https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gQmxlbmQgZnVuY3Rpb25zCm9zYygxMCwgMC4xLCAxKS5vdXQobzApCm5vaXNlKDMsIDAuMSkub3V0KG8xKQoKLy8gYWRkOiBicmlnaHRlbnMgYnkgYWRkaW5nIHR3byBzb3VyY2VzCi8vIG9zYygxMCwgMC4xLCAxKS5hZGQobm9pc2UoMyksIDAuNSkub3V0KCkKCi8vIG11bHQ6IGRhcmtlbnMgYnkgbXVsdGlwbHlpbmcgdHdvIHNvdXJjZXMKLy8gb3NjKDEwLCAwLjEsIDEpLm11bHQobm9pc2UoMyksIDEpLm91dCgpCgovLyBkaWZmOiBkaWZmZXJlbmNlIGJldHdlZW4gdHdvIHNvdXJjZXMKLy8gb3NjKDEwLCAwLjEsIDEpLmRpZmYobm9pc2UoMykpLm91dCgpCgovLyBibGVuZDogbGluZWFyIG1peCBiZXR3ZWVuIHR3byBzb3VyY2VzCi8vIG9zYygxMCwgMC4xLCAxKS5ibGVuZChub2lzZSgzKSwgMC41KS5vdXQoKQoKLy8gbGF5ZXI6IGJsZW5kIHVzaW5nIGFscGhhCi8vIHNoYXBlKDQsIDAuMywgMC4wMSkuY29sb3IoMSwwLDApLmxheWVyKHNoYXBlKDYsIDAuMiwgMC4wMSkuY29sb3IoMCwxLDApKS5vdXQoKQo=" allow="autoplay; camera; microphone; display-capture" allowfullscreen style="width:100%;height:100%;border:none;margin:0;padding:0;display:block;"></iframe>
+
+[Blend functions patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gQmxlbmQgZnVuY3Rpb25zCm9zYygxMCwgMC4xLCAxKS5vdXQobzApCm5vaXNlKDMsIDAuMSkub3V0KG8xKQoKLy8gYWRkOiBicmlnaHRlbnMgYnkgYWRkaW5nIHR3byBzb3VyY2VzCi8vIG9zYygxMCwgMC4xLCAxKS5hZGQobm9pc2UoMyksIDAuNSkub3V0KCkKCi8vIG11bHQ6IGRhcmtlbnMgYnkgbXVsdGlwbHlpbmcgdHdvIHNvdXJjZXMKLy8gb3NjKDEwLCAwLjEsIDEpLm11bHQobm9pc2UoMyksIDEpLm91dCgpCgovLyBkaWZmOiBkaWZmZXJlbmNlIGJldHdlZW4gdHdvIHNvdXJjZXMKLy8gb3NjKDEwLCAwLjEsIDEpLmRpZmYobm9pc2UoMykpLm91dCgpCgovLyBibGVuZDogbGluZWFyIG1peCBiZXR3ZWVuIHR3byBzb3VyY2VzCi8vIG9zYygxMCwgMC4xLCAxKS5ibGVuZChub2lzZSgzKSwgMC41KS5vdXQoKQoKLy8gbGF5ZXI6IGJsZW5kIHVzaW5nIGFscGhhCi8vIHNoYXBlKDQsIDAuMywgMC4wMSkuY29sb3IoMSwwLDApLmxheWVyKHNoYXBlKDYsIDAuMiwgMC4wMSkuY29sb3IoMCwxLDApKS5vdXQoKQo=)
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Modulate
+### Using one signal to warp another
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## What is modulation?
+
+Modulation uses **one texture's luminance values to displace the coordinate space** of another — the equivalent of frequency modulation (FM) but for visuals
+
+```
+source.modulate( modulator, amount ).out()
+osc()  .modulate( noise(),   0.1   ).out()
+```
+
+- The **modulator**'s pixel values become UV offsets
+- Higher `amount` = more displacement
+- Result: organic, glitchy, liquid distortions
+
+> This is the **core power move** in Hydra
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### `.modulate()`
+```js
+modulate( texture, amount = 0.1 )
+```
+
+The modulator's pixel brightness warps the coordinates of the source.
+```js
+osc(10, 0.1, 1).modulate(noise(3), 0.1).out()     // organic warp
+osc(10, 0.1, 1).modulate(osc(3), 0.05).out()      // oscillator warp
+osc(10, 0.1, 1).modulate(osc(3, 0), 0.5).out()    // static displacement
+
+// cross-modulation: two sources modulating each other
+osc(10, 0.1, 1).out(o1)
+noise(3).modulate(o1, 0.1).out()
+```
+
+> 🔑 This is the most versatile function in Hydra
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div>
+
+<aside class="notes"><p><a href="https://flok.plasm.studio/s/mad-black-swan-5f811c97##targets=hydra&c0=b3NjKDEwLCAwLjEsIDEpLm1vZHVsYXRlKG5vaXNlKDMpLCAwLjEpLm91dChvMCkgCi8vIHJlbmRlcihvMCkKCi8vIG9zYygxMDAsIDAuMSwgMSkubW9kdWxhdGUob3NjKDMwLCAwKSwgNTApLm91dChvMCkKCi8vIG9zYygxMCwgMC4xLCAxKS5vdXQobzEpCi8vIG5vaXNlKDMpLm1vZHVsYXRlKG8xLCAwLjEpLm91dChvMCkKLy8gcmVuZGVyKG8wKQoKLy8gbm9pc2UoMykub3V0KG8yKQovLyBvc2MoMTAsIDAuMSwgMSkubW9kdWxhdGUobzIsIDEpLm91dChvMykKLy8gcmVuZGVyKG8zKQ%253D%253D">https://flok.plasm.studio/s/mad-black-swan-5f811c97##targets=hydra&amp;c0=b3NjKDEwLCAwLjEsIDEpLm1vZHVsYXRlKG5vaXNlKDMpLCAwLjEpLm91dChvMCkgCi8vIHJlbmRlcihvMCkKCi8vIG9zYygxMDAsIDAuMSwgMSkubW9kdWxhdGUob3NjKDMwLCAwKSwgNTApLm91dChvMCkKCi8vIG9zYygxMCwgMC4xLCAxKS5vdXQobzEpCi8vIG5vaXNlKDMpLm1vZHVsYXRlKG8xLCAwLjEpLm91dChvMCkKLy8gcmVuZGVyKG8wKQoKLy8gbm9pc2UoMykub3V0KG8yKQovLyBvc2MoMTAsIDAuMSwgMSkubW9kdWxhdGUobzIsIDEpLm91dChvMykKLy8gcmVuZGVyKG8zKQ%253D%253D</a></p>
+</aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<iframe src="https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gTW9kdWxhdGUKb3NjKDEwLCAwLjEsIDEpLm91dCgpCgovLyBtb2R1bGF0ZSh0ZXh0dXJlLCBhbW91bnQpOiB3YXJwIGNvb3JkcyB3aXRoIGFub3RoZXIgc291cmNlCi8vIG9zYygxMCwgMC4xLCAxKS5tb2R1bGF0ZShub2lzZSgzKSwgMC4xKS5vdXQoKQovLyBvc2MoMTAsIDAuMSwgMSkubW9kdWxhdGUob3NjKDMpLCAwLjA1KS5vdXQoKQoKLy8gbW9kdWxhdGVSb3RhdGU6IHJvdGF0ZSB1c2luZyB0ZXh0dXJlCi8vIG9zYygxMCwgMC4xLCAxKS5tb2R1bGF0ZVJvdGF0ZShub2lzZSgyKSwgMikub3V0KCkKCi8vIG1vZHVsYXRlU2NhbGU6IHNjYWxlIHVzaW5nIHRleHR1cmUKLy8gb3NjKDEwLCAwLjEsIDEpLm1vZHVsYXRlU2NhbGUobm9pc2UoMiksIDIpLm91dCgpCgovLyBtb2R1bGF0ZVNjcm9sbFgvWTogc2Nyb2xsIHVzaW5nIHRleHR1cmUKLy8gb3NjKDEwLCAwLjEsIDEpLm1vZHVsYXRlU2Nyb2xsWChub2lzZSgyKSwgMC41KS5vdXQoKQovLyBvc2MoMTAsIDAuMSwgMSkubW9kdWxhdGVTY3JvbGxZKG9zYyg1KSwgMC41KS5vdXQoKQo=" allow="autoplay; camera; microphone; display-capture" allowfullscreen style="width:100%;height:100%;border:none;margin:0;padding:0;display:block;"></iframe>
+
+[Modulate patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gTW9kdWxhdGUKb3NjKDEwLCAwLjEsIDEpLm91dCgpCgovLyBtb2R1bGF0ZSh0ZXh0dXJlLCBhbW91bnQpOiB3YXJwIGNvb3JkcyB3aXRoIGFub3RoZXIgc291cmNlCi8vIG9zYygxMCwgMC4xLCAxKS5tb2R1bGF0ZShub2lzZSgzKSwgMC4xKS5vdXQoKQovLyBvc2MoMTAsIDAuMSwgMSkubW9kdWxhdGUob3NjKDMpLCAwLjA1KS5vdXQoKQoKLy8gbW9kdWxhdGVSb3RhdGU6IHJvdGF0ZSB1c2luZyB0ZXh0dXJlCi8vIG9zYygxMCwgMC4xLCAxKS5tb2R1bGF0ZVJvdGF0ZShub2lzZSgyKSwgMikub3V0KCkKCi8vIG1vZHVsYXRlU2NhbGU6IHNjYWxlIHVzaW5nIHRleHR1cmUKLy8gb3NjKDEwLCAwLjEsIDEpLm1vZHVsYXRlU2NhbGUobm9pc2UoMiksIDIpLm91dCgpCgovLyBtb2R1bGF0ZVNjcm9sbFgvWTogc2Nyb2xsIHVzaW5nIHRleHR1cmUKLy8gb3NjKDEwLCAwLjEsIDEpLm1vZHVsYXRlU2Nyb2xsWChub2lzZSgyKSwgMC41KS5vdXQoKQovLyBvc2MoMTAsIDAuMSwgMSkubW9kdWxhdGVTY3JvbGxZKG9zYyg1KSwgMC41KS5vdXQoKQo=)
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### More Modulate variants
+
+##### `.modulateRotate()`
+Uses texture brightness to rotate coordinates locally.
+```js
+osc(10, 0.1, 1).modulateRotate(noise(2), 2).out()    // liquid rotation
+osc(10, 0.1, 1).modulateRotate(osc(5), Math.PI).out()
+```
+
+##### `.modulateScale()`
+Uses texture to apply local zoom in/out.
+```js
+osc(10, 0.1, 1).modulateScale(noise(2), 2).out()
+osc(10, 0.1, 1).modulateScale(shape(4, 0.3, 0.01), 3).out()
+```
+
+##### `.modulateScrollX()` / `.modulateScrollY()`
+Scrolls coordinates using texture values.
+```js
+osc(10, 0.1, 1).modulateScrollX(noise(2), 0.5).out()
+osc(10, 0.1, 1).modulateScrollY(osc(5), 0.5).out()
+```
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# Kaleidoscope, Repeat & Scroll
+### Tiling and mirroring space
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### `.kaleid()`
+```js
+kaleid( nSides = 4 )
+```
+
+Folds the texture into a kaleidoscopic mirror — creates `nSides` reflections.
+```js
+osc(10, 0.1, 1).kaleid(3).out()   // 3-fold
+osc(10, 0.1, 1).kaleid(6).out()   // 6-fold
+noise(3).kaleid(P("3 4 6 8")).out() // pattern-driven sides
+
+// classic combo: modulate + kaleid
+noise(3)
+  .modulate(osc(3), 0.1)
+  .kaleid(6)
+  .out()
+```
+
+> `.kaleid()` is most powerful after a `.modulate()` — the warp gets reflected symmetrically
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+### `.repeat()` & `.scrollX()` / `.scrollY()`
+```js
+repeat( repeatX = 3, repeatY = 3, offsetX, offsetY )
+scrollX( scrollX = 0.5, speed )
+scrollY( scrollY = 0.5, speed )
+```
+
+```js
+// repeat: tile the texture
+osc(10, 0.1, 1).repeat(3, 3).out()
+shape(4, 0.5, 0.01).repeat(4, 4, 0.5, 0).out()
+shape(4, 0.5, 0.01).repeat(4, 4)
+  .modulate(noise(2), 0.05).out()
+
+// scrollX / scrollY: shift coordinates
+osc(10, 0.1, 1).scrollX(0.5).out()               // static offset
+osc(10, 0.1, 1).scrollX(0, 0.1).out()            // continuous scroll
+osc(10, 0.1, 1)
+  .scrollX(() => time * 0.1)
+  .scrollY(() => time * 0.05)
+  .out()
+```
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<iframe src="https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gS2FsZWlkb3Njb3BlIGFuZCByZXBlYXQKb3NjKDEwLCAwLjEsIDEpLm91dCgpCgovLyBrYWxlaWQoblNpZGVzKToga2FsZWlkb3Njb3BpYyBlZmZlY3QKLy8gb3NjKDEwLCAwLjEsIDEpLmthbGVpZCgzKS5vdXQoKQovLyBvc2MoMTAsIDAuMSwgMSkua2FsZWlkKDYpLm91dCgpCi8vIG5vaXNlKDMpLmthbGVpZChQKCIzIDQgNiA4IikpLm91dCgpCgovLyByZXBlYXQocmVwZWF0WCwgcmVwZWF0WSwgb2Zmc2V0WCwgb2Zmc2V0WSk6IHRpbGUgdGhlIHRleHR1cmUKLy8gb3NjKDEwLCAwLjEsIDEpLnJlcGVhdCgzLCAzKS5vdXQoKQovLyBzaGFwZSg0LCAwLjUsIDAuMDEpLnJlcGVhdCg0LCA0LCAwLjUsIDApLm91dCgpCgovLyBzY3JvbGxYIC8gc2Nyb2xsWTogc2hpZnQgdGV4dHVyZSBjb29yZHMKLy8gb3NjKDEwLCAwLjEsIDEpLnNjcm9sbFgoMC41KS5vdXQoKQovLyBvc2MoMTAsIDAuMSwgMSkuc2Nyb2xsWCgoKSA9PiB0aW1lICogMC4xKS5zY3JvbGxZKCgpID0+IHRpbWUgKiAwLjEpLm91dCgpCg==" allow="autoplay; camera; microphone; display-capture" allowfullscreen style="width:100%;height:100%;border:none;margin:0;padding:0;display:block;"></iframe>
+
+[Kaleid & repeat patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gS2FsZWlkb3Njb3BlIGFuZCByZXBlYXQKb3NjKDEwLCAwLjEsIDEpLm91dCgpCgovLyBrYWxlaWQoblNpZGVzKToga2FsZWlkb3Njb3BpYyBlZmZlY3QKLy8gb3NjKDEwLCAwLjEsIDEpLmthbGVpZCgzKS5vdXQoKQovLyBvc2MoMTAsIDAuMSwgMSkua2FsZWlkKDYpLm91dCgpCi8vIG5vaXNlKDMpLmthbGVpZChQKCIzIDQgNiA4IikpLm91dCgpCgovLyByZXBlYXQocmVwZWF0WCwgcmVwZWF0WSwgb2Zmc2V0WCwgb2Zmc2V0WSk6IHRpbGUgdGhlIHRleHR1cmUKLy8gb3NjKDEwLCAwLjEsIDEpLnJlcGVhdCgzLCAzKS5vdXQoKQovLyBzaGFwZSg0LCAwLjUsIDAuMDEpLnJlcGVhdCg0LCA0LCAwLjUsIDApLm91dCgpCgovLyBzY3JvbGxYIC8gc2Nyb2xsWTogc2hpZnQgdGV4dHVyZSBjb29yZHMKLy8gb3NjKDEwLCAwLjEsIDEpLnNjcm9sbFgoMC41KS5vdXQoKQovLyBvc2MoMTAsIDAuMSwgMSkuc2Nyb2xsWCgoKSA9PiB0aW1lICogMC4xKS5zY3JvbGxZKCgpID0+IHRpbWUgKiAwLjEpLm91dCgpCg==)
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
+
+## Putting it all together
+
+A complex patch uses the full chain:
+
+```js
+// source → geometry → modulate → color → blend → out
+noise(3, 0.1)
+  .modulate(osc(3, 0.05), 0.1)  // warp with oscillator
+  .kaleid(6)                      // fold symmetrically
+  .color(1, 0, 0.5)               // tint magenta
+  .add(
+    osc(20, 0.1, 1)               // add a second source
+      .rotate(() => time * 0.2)
+      .mult(shape(4, 0.6, 0.01))
+    , 0.5
+  )
+  .out()
+```
+
+> <mark>Read the chain left to right</mark> — each step feeds into the next
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 1 — Complex chains
+
+Task: Build a patch using at least one blend and one modulate
+
+Use at least 2 different sources
+
+Animate at least one parameter with an arrow function or `P()`
+
+Send to `o0`, preview a second version in `o1`
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.5" width="100px" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+# Break
+Complete your attendance on Moodle
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 2 —
+
+Plan an A/V performance (teams of 3, 10 min)
+
+One person doing Hydra, two people doing Strudel
+
+Use at least one blend or modulate in the Hydra patch
+
+Sync a Hydra parameter to the Strudel clock using `P()`
+
+Deliverable: 5-minute performance at the end
+
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+### Flok New REPLs (use these)
+<mark>Two people doing strudel, one doing Hydra</mark>
+
+Clean your Flok room before using
+
+Set the target accordingly
+
+|     |                                                                |     |                                                                |
+| --- | -------------------------------------------------------------- | --- | -------------------------------------------------------------- |
+|     | [Group 1](https://flok.plasm.studio/s/cart398-lc-st-st-st-01#) |     | [Group 6](https://flok.plasm.studio/s/cart398-lc-st-st-st-06)  |
+|     | [Group 2](https://flok.plasm.studio/s/cart398-lc-st-st-st-02)  |     | [Group 7](https://flok.plasm.studio/s/cart398-lc-st-st-st-07)  |
+|     | [Group 3](https://flok.plasm.studio/s/cart398-lc-st-st-st-03)  |     | [Group 8](https://flok.plasm.studio/s/cart398-lc-st-st-st-08)  |
+|     | [Group 4](https://flok.plasm.studio/s/cart398-lc-st-st-st-04)  |     | [Group 9](https://flok.plasm.studio/s/cart398-lc-st-st-st-09)  |
+|     | [Group 5](https://flok.plasm.studio/s/cart398-lc-st-st-st-05)  |     | [Group 10](https://flok.plasm.studio/s/cart398-lc-st-st-st-10) |
+|     |                                                                |     |                                                                |
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<div class="" style="opacity: 100%; z-index: 9; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px;">
+    
+  </div>
+</div>
+
+
+
+
+<!-- CONTENT ON TOP (doesn't block clicks behind it) -->
+<div class="" style="position: absolute; z-index: 20; pointer-events: none; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## [One patch a day](https://moodle.concordia.ca/moodle/mod/assign/view.php?id=4448614) - Always!
+
+Use the following repository as a template:
+
+https://github.com/concordia-dcart/CART398-LC-OPaD
+
+Don't fork, use "Use this template" to "Create a new repository", instead. Make it public.
+
+Add the URL of your repository to the following spreadsheet
+
+[Spreadsheet](https://docs.google.com/spreadsheets/d/1AQA6Kc5pd2JnfIX-sxv50vC-xLsh6W5ABWXyIgsLzG4/edit?usp=drive_link)
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+
+/* Re-enable pointer events only for actual interactive elements inside content */
+.slide-content a,
+.slide-content button,
+.slide-content input,
+.slide-content textarea,
+.slide-content select,
+.slide-content iframe {
+  pointer-events: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+} 
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section></div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/obsidian-markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script src="plugin/mermaid/mermaid.js"></script>
+    <script src="plugin/chart/chart.umd.js"></script>
+    <script src="plugin/chart/plugin.js"></script>
+    <script src="plugin/customcontrols/plugin.js"></script>
+
+    <script>
+        function extend() {
+            const target = {};
+            for (let i = 0; i < arguments.length; i++) {
+                const source = arguments[i];
+                for (const key in source) {
+                    if (source.hasOwnProperty(key)) {
+                        target[key] = source[key];
+                    }
+                }
+            }
+            return target;
+        }
+
+        function isLight(color) {
+            let hex = color.replace('#', '');
+
+            // convert #fff => #ffffff
+            if (hex.length == 3) {
+                hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+            }
+
+            const c_r = parseInt(hex.substr(0, 2), 16);
+            const c_g = parseInt(hex.substr(2, 2), 16);
+            const c_b = parseInt(hex.substr(4, 2), 16);
+            const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+            return brightness > 155;
+        }
+
+        const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--r-background-color').trim();
+
+        if (isLight(bgColor)) {
+            document.body.classList.add('has-light-background');
+        } else {
+            document.body.classList.add('has-dark-background');
+        }
+
+        // default options to init reveal.js
+        const defaultOptions = {
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            transition: 'default', // none/fade/slide/convex/concave/zoom
+            plugins: [
+                ObsidianMarkdown,
+                RevealHighlight,
+                RevealZoom,
+                RevealNotes,
+                RevealMath.KaTeX,
+                RevealMermaid,
+                RevealChart,
+                RevealCustomControls,
+            ],
+            allottedTime: "120",
+
+            katex: {
+                local: 'plugin/math/katex',
+                extensions: ["mhchem"],
+            },
+            markdown: {
+                gfm: true,
+            },
+            mermaid: {
+                theme: isLight(bgColor) ? 'default' : 'dark',
+            },
+            customcontrols: {
+                controls: [
+                ]
+            },
+        };
+
+        if ( pageInIframe() ) {
+            defaultOptions.scrollActivationWidth = 5;
+        }
+
+        // options from URL query string
+        const queryOptions = Reveal().getQueryHash() || {};
+
+        const options = extend(defaultOptions, {"controls":true,"progress":true,"slideNumber":true,"center":true,"transition":"fade","transitionSpeed":"default","width":1200,"height":700,"margin":0.04,"controlsLayout":"bottom-right","disableLayout":false,"previewLinks":true}, queryOptions);
+    </script>
+
+    <script>
+      /**
+       * KaTeX Equation Numbering Note
+       * 
+       * KaTeX maintains a global equation counter for \begin{equation} environments.
+       * When navigating between slides, reveal.js math plugin may re-render math, causing 
+       * equation numbers to change randomly.
+       * 
+       * Note: Regular $$ blocks don't have equation numbers - only \begin{equation} does.
+       * 
+       * If you experience issues with equation numbers changing:
+       * Use manual \tag{} commands: \begin{equation}\tag{1} ... \end{equation}
+       */
+      
+      Reveal.initialize(options);
+    </script>
+    <!-- created with Slides Extended reveal.html template -->
+</body>
+</html>
