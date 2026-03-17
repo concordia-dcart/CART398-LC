@@ -451,9 +451,10 @@ Hydra has **4 external source buffers**: `s0`, `s1`, `s2`, `s3`
 These can capture live input from camera, screen, or video
 
 ```js
-s0.initCam()        // webcam → s0
-s1.initScreen()     // screen capture → s1
-s2.initVideo(url)   // video file / stream → s2
+s0.initImage(url)   // image file → s0
+s1.initCam()        // webcam → s1
+s2.initScreen()     // screen capture → s2
+s3.initVideo(url)   // video file / stream → s3
 ```
 
 Once initialized, use `src()` to pull them into your patch:
@@ -521,6 +522,85 @@ CART398 Live Coding  | Winter 2026
   <div class="slide-content">
     
 
+### Images: `initImage()`
+
+Loads a static image as a texture. The URL must be CORS-accessible.
+```js
+s0.initImage("https://picsum.photos/1920/1080") // random image
+```
+<!-- .element: style="font-size: 0.8em" -->
+```js
+src(s0).out()                                        // raw image
+
+// src(s0).kaleid(5).out()                              // kaleidoscope
+
+// src(s0).modulate(noise(4), 0.04).out()               // warp the image
+
+// src(s0).mult(osc(10, 1, 1), 1).out()           // blend with oscillator
+```
+<!-- .element: style="font-size: 0.75em" -->
+
+> 💡 Use `https://picsum.photos/1920/1080` for quick testing — it returns a random CORS-friendly photo every time
+
+[initImage patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=czAuaW5pdEltYWdlKCJodHRwczovL3BpY3N1bS5waG90b3MvMTkyMC8xMDgwIikgICAgICAgLy8gcmFuZG9tIGltYWdlCgpzcmMoczApLm91dCgpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIHJhdyBpbWFnZQoKLy8gc3JjKHMwKS5rYWxlaWQoNSkub3V0KCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBrYWxlaWRvc2NvcGUKCi8vIHNyYyhzMCkubW9kdWxhdGUobm9pc2UoNCksIDAuMDQpLm91dCgpICAgICAgICAgICAgICAgLy8gd2FycCB0aGUgaW1hZ2UKCi8vIHNyYyhzMCkubXVsdChvc2MoMTAsIDEsIDEpLCAxKS5vdXQoKSAgICAgICAgICAgLy8gYmxlbmQgd2l0aCBvc2NpbGxhdG9y)
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+</style>
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+}
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<!-- MEDIA BEHIND (lower z-index, pointer-events disabled so clicks pass through) -->
+<div class="" style="opacity: 100%; z-index: 9; pointer-events: none; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px; pointer-events: auto;">
+    
+  </div>
+</div>
+
+
+<!-- CONTENT ON TOP (higher z-index, fully interactive) -->
+<div class="" style="position: absolute; z-index: 20; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
 ### Camera: `s0.initCam()`
 ```js
 s0.initCam()             // default camera (index 0)
@@ -529,11 +609,9 @@ s0.initCam(1)            // second camera (e.g., external)
 
 Once active, treat it like any source:
 ```js
-// raw camera
-src(s0).out()
+src(s0).out() // raw camera
 
-// color-shifted camera
-src(s0).hue(0.5).saturate(2).out()
+src(s0).hue(0.5).saturate(2).out() // color-shifted camera
 
 // camera as modulator (the camera warps an oscillator)
 osc(10, 0.1, 1).modulate(src(s0), 0.05).out()
@@ -545,7 +623,7 @@ src(s0).blend(osc(10, 0.1, 1), 0.3).out()
 src(s0).diff(o0).out(o0)
 ```
 
-[initCam patch](https://flok.plasm.studio/s/youthful-plum-lynx-799befec##targets=hydra&c0=czAuaW5pdENhbSgpCi8vIHMwLmluaXRDYW0oMSkgLy8gc2Vjb25kIGNhbWVyYSAoZS5nLiwgZXh0ZXJuYWwpCnNyYyhzMCkub3V0KCkKCi8vIHNyYyhzMCkKLy8gICAuc2NhbGUoMSwgMTIvMTYpCi8vICAgLmh1ZSgwLjc1KS5zYXR1cmF0ZSgyKQovLyAgIC5zY3JvbGxZKCgpID0%252BIDAuMDUqdGltZSkKLy8gICAub3V0KCkKCi8vIEJsZW5kaW5nCi8vIG9zYygxMCwgMC4xLCAxKS5ibGVuZChzcmMoczApLCAwLjUwKS5vdXQoKSAvLyBzMCBhcyBtb2R1bGF0b3Igb2Ygb3NjaWxsYXRvcgoKLy8gc3JjKHMwKS5ibGVuZChvc2MoMTAsIDAuMSwgMSksIDAuNTApLm91dCgpIC8vIG9zY2lsbGF0b3IgYXMgbW9kdWxhdG9yIG9mIHMwCgovLyBNb2R1bGF0aW9uCi8vIG9zYygxMCwgMC4xLCAxKS5tb2R1bGF0ZShzcmMoczApLCAwLjI1KS5vdXQoKSAvLyBzMCBhcyBtb2R1bGF0b3Igb2Ygb3NjaWxsYXRvcgoKLy8gc3JjKHMwKS5tb2R1bGF0ZShvc2MoMTAsIDAuMSwgMSksIDAuMjUpLm91dCgpIC8vIG9zY2lsbGF0b3IgYXMgbW9kdWxhdG9yIG9mIHMwCgovLyBzcmMoczApLmRpZmYobzApLm91dChvMCkgLy8gY2FtZXJhIGRyaXZpbmcgYSBmZWVkYmFjayBsb29w)
+[initCam patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=czAuaW5pdENhbSgpCi8vIHMwLmluaXRDYW0oMSkgLy8gc2Vjb25kIGNhbWVyYSAoZS5nLiwgZXh0ZXJuYWwpCnNyYyhzMCkub3V0KCkKCi8vIHNyYyhzMCkKLy8gICAuc2NhbGUoMSwgMTIvMTYpCi8vICAgLmh1ZSgwLjc1KS5zYXR1cmF0ZSgyKQovLyAgIC5zY3JvbGxZKCgpID0%252BIDAuMDUqdGltZSkKLy8gICAub3V0KCkKCi8vIEJsZW5kaW5nCi8vIG9zYygxMCwgMC4xLCAxKS5ibGVuZChzcmMoczApLCAwLjUwKS5vdXQoKSAvLyBzMCBhcyBtb2R1bGF0b3Igb2Ygb3NjaWxsYXRvcgoKLy8gc3JjKHMwKS5ibGVuZChvc2MoMTAsIDAuMSwgMSksIDAuNTApLm91dCgpIC8vIG9zY2lsbGF0b3IgYXMgbW9kdWxhdG9yIG9mIHMwCgovLyBNb2R1bGF0aW9uCi8vIG9zYygxMCwgMC4xLCAxKS5tb2R1bGF0ZShzcmMoczApLCAwLjI1KS5vdXQoKSAvLyBzMCBhcyBtb2R1bGF0b3Igb2Ygb3NjaWxsYXRvcgoKLy8gc3JjKHMwKS5tb2R1bGF0ZShvc2MoMTAsIDAuMSwgMSksIDAuMjUpLm91dCgpIC8vIG9zY2lsbGF0b3IgYXMgbW9kdWxhdG9yIG9mIHMwCgovLyBzcmMoczApLmRpZmYobzApLm91dChvMCkgLy8gY2FtZXJhIGRyaXZpbmcgYSBmZWVkYmFjayBsb29w)
 
 
 
@@ -634,7 +712,7 @@ src(s1)
 
 > Captures the browser tab — you can screenshare from another tab and process it live
 
-[Screen capture patch](https://flok.plasm.studio/s/lonely-brown-lamprey-63e78e69##targets=hydra&c0=czEuaW5pdFNjcmVlbigpCgovLyByYXcgc2NyZWVuIGNhcHR1cmUKLy8gc3JjKHMxKS5vdXQoKQoKLy8gZ2xpdGNoIHRoZSBzY3JlZW4KLy8gc3JjKHMxKS5kaWZmKG8wKS5vdXQobzApCgovLyBzY3JlZW4gKyBtb2R1bGF0ZQovLyBzcmMoczEpLm1vZHVsYXRlKG5vaXNlKDMpLCAwLjAyKS5vdXQoKQoKLy8gZmVlZGJhY2sgb24gc2NyZWVuIGNhcHR1cmUKLy8gc3JjKHMxKQovLyAgIC5zY2FsZSgxLjEpCi8vICAgLnJvdGF0ZSgwLjAxKQovLyAgIC5ibGVuZChzcmMoczEpLCAwLjI1KQovLyAgIC5vdXQobzApCgoK)
+[Screen capture patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=czEuaW5pdFNjcmVlbigpCgovLyByYXcgc2NyZWVuIGNhcHR1cmUKLy8gc3JjKHMxKS5vdXQoKQoKLy8gZ2xpdGNoIHRoZSBzY3JlZW4KLy8gc3JjKHMxKS5kaWZmKG8wKS5vdXQobzApCgovLyBzY3JlZW4gKyBtb2R1bGF0ZQovLyBzcmMoczEpLm1vZHVsYXRlKG5vaXNlKDMpLCAwLjAyKS5vdXQoKQoKLy8gZmVlZGJhY2sgb24gc2NyZWVuIGNhcHR1cmUKLy8gc3JjKHMxKQovLyAgIC5zY2FsZSgxLjEpCi8vICAgLnJvdGF0ZSgwLjAxKQovLyAgIC5ibGVuZChzcmMoczEpLCAwLjI1KQovLyAgIC5vdXQobzApCgoK)
 
 
 
@@ -722,7 +800,7 @@ src(s0)
 > Video loops automatically — use `.playbackRate` on the source to control playback rate
 
 
-[InitVideo patch](https://flok.plasm.studio/s/native-cyan-butterfly-737425f5##targets=hydra&c0=czAuaW5pdFZpZGVvKCJodHRwczovL3ppcC5wbGFzbS5zdHVkaW8vcmF3L2JRaWJRMy5tcDQiKQoKLy8gYmFzaWMgcGxheWJhY2sKc3JjKHMwKS5vdXQoKQoKLy8gYXBwbHkgdHJhbnNmb3JtcwovLyBzcmMoczApLmNvbG9yKDEsIDAuNSwgMCkub3V0KCkKCi8vIHVzZSB2aWRlbyBhcyBtb2R1bGF0b3IKLy8gc3JjKHMwKS5tb2R1bGF0ZShzcmMoczApLCAoKSA9PiAwLjEyNSAqIE1hdGguc2luKHRpbWUpKS5vdXQoKQoKLy8gYmxlbmQgdmlkZW8gd2l0aCBzeW50aCB0ZXh0dXJlCi8vIHNyYyhzMCkKLy8gICAubXVsdChvc2MoMTAsIC0wLjIsIDEpLmthbGVpZCg0KSkKLy8gICAub3V0KCkKCi8vIHMwLnNyYy5wbGF5YmFja1JhdGUgPSAx)
+[InitVideo patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=czAuaW5pdFZpZGVvKCJodHRwczovL3ppcC5wbGFzbS5zdHVkaW8vcmF3L2JRaWJRMy5tcDQiKQoKLy8gYmFzaWMgcGxheWJhY2sKc3JjKHMwKS5vdXQoKQoKLy8gYXBwbHkgdHJhbnNmb3JtcwovLyBzcmMoczApLmNvbG9yKDEsIDAuNSwgMCkub3V0KCkKCi8vIHVzZSB2aWRlbyBhcyBtb2R1bGF0b3IKLy8gc3JjKHMwKS5tb2R1bGF0ZShzcmMoczApLCAoKSA9PiAwLjEyNSAqIE1hdGguc2luKHRpbWUpKS5vdXQoKQoKLy8gYmxlbmQgdmlkZW8gd2l0aCBzeW50aCB0ZXh0dXJlCi8vIHNyYyhzMCkKLy8gICAubXVsdChvc2MoMTAsIC0wLjIsIDEpLmthbGVpZCg0KSkKLy8gICAub3V0KCkKCi8vIHMwLnNyYy5wbGF5YmFja1JhdGUgPSAx)
 
 
 
@@ -952,7 +1030,7 @@ shape(5, () => a.fft[0] * 0.5 + 0.1, 0.01)
 ```
 
 
-[FFT analyzer patch](https://flok.plasm.studio/s/blank-turquoise-bovid-7cf0675f##targets=hydra&c0=YS5zaG93KCkKCmEuc2V0Qmlucyg0KSAgICAgLy8gbnVtYmVyIG9mIGZyZXF1ZW5jeSBiaW5zIChkZWZhdWx0OiA0KQphLnNldFNtb290aCgwLjQpIC8vIHNtb290aGluZyAw4oCTMSAoZGVmYXVsdDogMC40KQphLnNldEN1dG9mZig1KSAgIC8vIG5vaXNlIGdhdGUg4oCUIHZhbHVlcyBiZWxvdyB0aGlzIOKGkiAwCmEuc2V0U2NhbGUoMikgICAgLy8gb3V0cHV0IGFtcGxpdHVkZSBzY2FsaW5nCgovLyBmcmVxdWVuY3kgZHJpdmVzIG9zY2lsbGF0b3IgZnJlcXVlbmN5Ci8vIG9zYygKLy8gICAoKSA9PiBhLmZmdFswXSAqIDYwICsgMTAsICAgLy8gYmFzcyDihpIgZnJlcQovLyAgIDAuMDEsCi8vICAgKCkgPT4gYS5mZnRbMl0gKiAyICAgICAgICAgICAvLyBtaWRzIOKGkiBvZmZzZXQKLy8gKS5vdXQoKQoKLy8gc2hhcGUgcHVsc2luZyB3aXRoIHRoZSBiZWF0Ci8vIHNoYXBlKDUsICgpID0%252BIGEuZmZ0WzBdICogMC41ICsgMC4xLCAwLjAxKQovLyAgIC5jb2xvcigoKSA9PiBhLmZmdFsxXSwgMC41LCAoKSA9PiBhLmZmdFszXSkKLy8gICAuc2NhbGUoMSwgOS8xNikKLy8gICAub3V0KCk%253D)
+[FFT analyzer patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=YS5zaG93KCkKCmEuc2V0Qmlucyg0KSAgICAgLy8gbnVtYmVyIG9mIGZyZXF1ZW5jeSBiaW5zIChkZWZhdWx0OiA0KQphLnNldFNtb290aCgwLjQpIC8vIHNtb290aGluZyAw4oCTMSAoZGVmYXVsdDogMC40KQphLnNldEN1dG9mZig1KSAgIC8vIG5vaXNlIGdhdGUg4oCUIHZhbHVlcyBiZWxvdyB0aGlzIOKGkiAwCmEuc2V0U2NhbGUoMikgICAgLy8gb3V0cHV0IGFtcGxpdHVkZSBzY2FsaW5nCgovLyBmcmVxdWVuY3kgZHJpdmVzIG9zY2lsbGF0b3IgZnJlcXVlbmN5Ci8vIG9zYygKLy8gICAoKSA9PiBhLmZmdFswXSAqIDYwICsgMTAsICAgLy8gYmFzcyDihpIgZnJlcQovLyAgIDAuMDEsCi8vICAgKCkgPT4gYS5mZnRbMl0gKiAyICAgICAgICAgICAvLyBtaWRzIOKGkiBvZmZzZXQKLy8gKS5vdXQoKQoKLy8gc2hhcGUgcHVsc2luZyB3aXRoIHRoZSBiZWF0Ci8vIHNoYXBlKDUsICgpID0%252BIGEuZmZ0WzBdICogMC41ICsgMC4xLCAwLjAxKQovLyAgIC5jb2xvcigoKSA9PiBhLmZmdFsxXSwgMC41LCAoKSA9PiBhLmZmdFszXSkKLy8gICAuc2NhbGUoMSwgOS8xNikKLy8gICAub3V0KCk%253D)
 
 
   </div>
@@ -1029,7 +1107,7 @@ noise(() => a.fft[0] * 30 + 3)
 
 > 🔑 Use `Math.floor()` to snap continuous FFT values to integers for `.kaleid()` and `.repeat()`
 
-[Complex chain patch](https://flok.plasm.studio/s/disastrous-apricot-guan-6dafb9ef##targets=hydra&c0=YS5zZXRCaW5zKDQpCmEuc2V0U21vb3RoKDAuODUpCmEuc2V0Q3V0b2ZmKDUpCmEuc2V0U2NhbGUoMSkKCi8vIG5vaXNlIHNjYWxlIGRyaXZlbiBieSBzdWItYmFzcwpub2lzZSgoKSA9PiBhLmZmdFswXSAqIDMwICsgMykKICAubW9kdWxhdGUob3NjKDMsIDAuMSksICgpID0%252BIGEuZmZ0WzFdICogMC4yKQogIC5rYWxlaWQoKCkgPT4gTWF0aC5mbG9vcihhLmZmdFsyXSAqIDgpICsgMykKICAuY29sb3IoKCkgPT4gYS5mZnRbMF0sICgpID0%252BIGEuZmZ0WzJdLCAoKSA9PiBhLmZmdFszXSkKICAub3V0KCkKICAKCg%253D%253D)
+[Complex chain patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=YS5zZXRCaW5zKDQpCmEuc2V0U21vb3RoKDAuODUpCmEuc2V0Q3V0b2ZmKDUpCmEuc2V0U2NhbGUoMSkKCi8vIG5vaXNlIHNjYWxlIGRyaXZlbiBieSBzdWItYmFzcwpub2lzZSgoKSA9PiBhLmZmdFswXSAqIDMwICsgMykKICAubW9kdWxhdGUob3NjKDMsIDAuMSksICgpID0%252BIGEuZmZ0WzFdICogMC4yKQogIC5rYWxlaWQoKCkgPT4gTWF0aC5mbG9vcihhLmZmdFsyXSAqIDgpICsgMykKICAuY29sb3IoKCkgPT4gYS5mZnRbMF0sICgpID0%252BIGEuZmZ0WzJdLCAoKSA9PiBhLmZmdFszXSkKICAub3V0KCkKICAKCg%253D%253D)
 
   </div>
 </div>
@@ -1098,7 +1176,7 @@ osc(10, 0.1, 1)
   .out()
 ```
 
-[A/V integration with Strude](https://flok.plasm.studio/s/foreign-orange-rabbit-cf9cc284##targets=hydra%2Cstrudel&c0=YS5zaG93KCkKCmEuc2V0Qmlucyg0KQphLnNldFNtb290aCgwLjg1KQphLnNldEN1dG9mZig1KQphLnNldFNjYWxlKDEpCgpvc2MoMTAsIDAuMSwgMSkKICAua2FsZWlkKFAoIjMgNiA4IikpCiAgLnJvdGF0ZSgoKSA9PiBhLmZmdFsyXSAqIE1hdGguUEkpCiAgLm91dCgp&c1=c2FtcGxlcygnZ2l0aHViOnRpZGFsY3ljbGVzL2RpcnQtc2FtcGxlcycpCnMoIm1ldGFsKjMgYXJweSBiZCEyIDw8cmltOjMqNiByaW06MyozPiBuZXdub3RlcyoxPiBjcC8zIikK)
+[A/V integration with Strude](https://vigliensoni.github.io/flok-join#targets=hydra%2Cstrudel&c0=YS5zaG93KCkKCmEuc2V0Qmlucyg0KQphLnNldFNtb290aCgwLjg1KQphLnNldEN1dG9mZig1KQphLnNldFNjYWxlKDEpCgpvc2MoMTAsIDAuMSwgMSkKICAua2FsZWlkKFAoIjMgNiA4IikpCiAgLnJvdGF0ZSgoKSA9PiBhLmZmdFsyXSAqIE1hdGguUEkpCiAgLm91dCgp&c1=c2FtcGxlcygnZ2l0aHViOnRpZGFsY3ljbGVzL2RpcnQtc2FtcGxlcycpCnMoIm1ldGFsKjMgYXJweSBiZCEyIDw8cmltOjMqNiByaW06MyozPiBuZXdub3RlcyoxPiBjcC8zIikK)
 
 
 
@@ -1229,15 +1307,16 @@ Feed the **output of a buffer back into itself** as a source — each frame buil
 ```js
 // render to o0, read from o0 in the next frame
 osc(10, 0.1, 0.5)
-  .modulate(o0, 0.01)    // previous frame as modulator
-  .rotate(0.002)
+  .modulate(o0, 0.25)    // previous frame as modulator
+  .rotate(0.5)
   .out(o0)               // write back to same buffer
 ```
 
 > Feedback creates **trails, smears, infinite zoom, and ghosting** effects
 >
-> Small values (`0.001–0.01`) = subtle trails  ·  large values = chaotic accumulation
+> Small values = subtle trails  ·  large values = chaotic accumulation
 
+[Feedback patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=b3NjKDEwLCAwLjEsIDAuNSkKICAubW9kdWxhdGUobzAsIDAuMjUpICAgIC8vIHByZXZpb3VzIGZyYW1lIGFzIG1vZHVsYXRvcgogIC5yb3RhdGUoMC41KQogIC5vdXQobzApICA%253D)
 
   </div>
 </div>
@@ -1314,14 +1393,13 @@ src(o0)
   .out(o0)
 ```
 
-**Difference feedback (glitch):**
-```js
-src(s0)                  // camera input
-  .diff(o0)              // xor with previous frame
-  .out(o0)
-```
 
 > Use `solid(0).out(o0)` to <mark>clear a feedback buffer</mark> before starting a new patch
+
+
+[Feedback recipes patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=b3NjKDEwLCAwLjAsIDEuMCkKICAuYWRkKG8wLCAoKSA9PiAwLjg3NSswLjEyNSpNYXRoLnNpbih0aW1lKSkgICAgICAgLy8gODUlIG9mIHByZXZpb3VzIGZyYW1lICsgMTUlIG5ldwogIC5vdXQobzApCgpzcmMobzApCiAgLnNjYWxlKDEuMDEpICAgICAgICAgIC8vIHRpbnkgem9vbSBlYWNoIGZyYW1lCiAgLnJvdGF0ZSgwLjAxKQogIC5ibGVuZChvc2MoMTAsIDAuMSwgMSksIDAuMDEpCiAgLm91dChvMCkKCnNvbGlkKDApLm91dChvMCk%253D)
+
+
 
 
   </div>
@@ -1356,12 +1434,6 @@ src(s0)                  // camera input
 <mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
 CART398 Live Coding  | Winter 2026
 </div>
-</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" template="" -->
-<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
-
-<iframe src="https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gRmVlZGJhY2sgbG9vcHMgYW5kIEphdmFTY3JpcHQKLy8gRmVlZGJhY2s6IHJlbmRlciB0byBhIGJ1ZmZlciwgdXNlIGl0IGFzIHNvdXJjZSwgcmUtcmVuZGVyCm9zYygxMCwgMC4xLCAxKS5vdXQobzApCgovLyBmZWVkYmFjayBwYXRjaAovLyBvc2MoMTAsIDAuMSwgMC41KQovLyAgIC5tb2R1bGF0ZShvMCwgMC4wMSkgIC8vIHVzZSBwcmV2aW91cyBmcmFtZQovLyAgIC5yb3RhdGUoMC4wMDEpCi8vICAgLm91dChvMCkKCi8vIHNldEludGVydmFsIOKAlCBjaGFuZ2UgcGFyYW1zIG92ZXIgdGltZQovLyB2YXIgcGFyYW1zID0ge2ZyZXE6IDEwLCBzeW5jOiAwLjF9Ci8vIHNldEludGVydmFsKCgpID0+IHsgcGFyYW1zLmZyZXEgPSBNYXRoLnJhbmRvbSgpICogNTAgKyA1IH0sIDIwMDApCi8vIG9zYygoKSA9PiBwYXJhbXMuZnJlcSwgKCkgPT4gcGFyYW1zLnN5bmMsIDEpLm91dCgpCgovLyBtb3VzZSBpbnRlcmFjdGlvbgovLyBvc2MoMTAsIDAuMSwgMSkKLy8gICAucm90YXRlKCgpID0+IG1vdXNlLnggLyB3aWR0aCAqIE1hdGguUEkpCi8vICAgLm91dCgpCg==" allow="autoplay; camera; microphone; display-capture" allowfullscreen style="width:100%;height:100%;border:none;margin:0;padding:0;display:block;"></iframe>
-
-[Feedback & JS patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=Ly8gRmVlZGJhY2sgbG9vcHMgYW5kIEphdmFTY3JpcHQKLy8gRmVlZGJhY2s6IHJlbmRlciB0byBhIGJ1ZmZlciwgdXNlIGl0IGFzIHNvdXJjZSwgcmUtcmVuZGVyCm9zYygxMCwgMC4xLCAxKS5vdXQobzApCgovLyBmZWVkYmFjayBwYXRjaAovLyBvc2MoMTAsIDAuMSwgMC41KQovLyAgIC5tb2R1bGF0ZShvMCwgMC4wMSkgIC8vIHVzZSBwcmV2aW91cyBmcmFtZQovLyAgIC5yb3RhdGUoMC4wMDEpCi8vICAgLm91dChvMCkKCi8vIHNldEludGVydmFsIOKAlCBjaGFuZ2UgcGFyYW1zIG92ZXIgdGltZQovLyB2YXIgcGFyYW1zID0ge2ZyZXE6IDEwLCBzeW5jOiAwLjF9Ci8vIHNldEludGVydmFsKCgpID0+IHsgcGFyYW1zLmZyZXEgPSBNYXRoLnJhbmRvbSgpICogNTAgKyA1IH0sIDIwMDApCi8vIG9zYygoKSA9PiBwYXJhbXMuZnJlcSwgKCkgPT4gcGFyYW1zLnN5bmMsIDEpLm91dCgpCgovLyBtb3VzZSBpbnRlcmFjdGlvbgovLyBvc2MoMTAsIDAuMSwgMSkKLy8gICAucm90YXRlKCgpID0+IG1vdXNlLnggLyB3aWR0aCAqIE1hdGguUEkpCi8vICAgLm91dCgpCg==)
 </div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
 <div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
 
@@ -1623,162 +1695,21 @@ Scales the global `time` variable and all continuous animations:
 speed = 0.25
 
 osc(10, 0.1, 1)
-  .rotate(() => time * 0.5)   // slowed by global speed
+  .rotate(() => time)   // controlled by global speed
   .modulate(noise(3), 0.1)
   .out()
 
-// use bpm for tempo-sync
-bpm = 120
-// time now increments 2× per second at 120 bpm
-osc(10, 0.1, 1).rotate(() => time * Math.PI).out()
+bpm = 120 // use bpm for tempo-sync
+speed = 5
+osc(10, 0.1, 2)
+  .pixelate([10, 103, 10, 105, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 100])
+  .out()
 ```
 
-
-  </div>
-</div>
-
-<style>
-/* Force left alignment */
-.slide-content, .slide-content * { text-align: left !important; }
-</style>
+[Speed patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=c3BlZWQgPSAwLjI1Cgpvc2MoMTAsIDAuMSwgMSkKICAucm90YXRlKCgpID0%252BIHRpbWUpICAgLy8gY29udHJvbGxlZCBieSBnbG9iYWwgc3BlZWQKICAubW9kdWxhdGUobm9pc2UoMyksIDAuMSkKICAub3V0KCkKCi8vIHVzZSBicG0gZm9yIHRlbXBvLXN5bmMKLy8gYnBtID0gMTIwCi8vIHNwZWVkID0gNQovLyB0aW1lIG5vdyBpbmNyZW1lbnRzIDLDlyBwZXIgc2Vjb25kIGF0IDEyMCBicG0KLy8gb3NjKDEwLCAwLjEsIDIpCi8vICAgLnBpeGVsYXRlKFsxMCwgMTAzLCAxMCwgMTA1LCA2LCA3LCA4LCA5LCAxMCwgMTEsIDEyLCAxMywgMTQsIDE1LCAxNiwgMTAwXSkKLy8gICAub3V0KCk%253D)
 
 
-<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
 
-<mark style="background-color:transparent; color:white; font-size:50%;">
-
-</div>
-
-
-<style>
-.horizontal_dotted_line{
-  border-bottom: 2px dotted gray;
-}
-</style>
-
-<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
-
-</div>
-
-
-<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
-
-<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
-CART398 Live Coding  | Winter 2026
-</div>
-</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
-<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
-
-<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
-
- 
-</div>
-
-
-<!-- MEDIA BEHIND (lower z-index, pointer-events disabled so clicks pass through) -->
-<div class="" style="opacity: 100%; z-index: 9; pointer-events: none; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
-
-  <div style="width: 960px; height: 540px; pointer-events: auto;">
-    
-  </div>
-</div>
-
-
-<!-- CONTENT ON TOP (higher z-index, fully interactive) -->
-<div class="" style="position: absolute; z-index: 20; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
-
-  <div class="slide-content">
-    
-<!-- .slide: data-auto-animate="true" -->
-
-
-# Custom GLSL
-### Extending Hydra with shader functions
-
-  </div>
-</div>
-
-<style>
-/* Force left alignment */
-.slide-content, .slide-content * { text-align: left !important; }
-</style>
-
-
-<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
-
-<mark style="background-color:transparent; color:white; font-size:50%;">
-
-</div>
-
-
-<style>
-.horizontal_dotted_line{
-  border-bottom: 2px dotted gray;
-}
-</style>
-
-<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
-
-</div>
-
-
-<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
-
-<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
-CART398 Live Coding  | Winter 2026
-</div>
-</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
-<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
-
-<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
-
- 
-</div>
-
-
-<!-- MEDIA BEHIND (lower z-index, pointer-events disabled so clicks pass through) -->
-<div class="" style="opacity: 100%; z-index: 9; pointer-events: none; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
-
-  <div style="width: 960px; height: 540px; pointer-events: auto;">
-    
-  </div>
-</div>
-
-
-<!-- CONTENT ON TOP (higher z-index, fully interactive) -->
-<div class="" style="position: absolute; z-index: 20; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
-
-  <div class="slide-content">
-    
-
-## `setFunction()` — custom GLSL
-
-Add your own GLSL functions to Hydra's function set:
-
-```js
-setFunction({
-  name: 'myEffect',
-  type: 'color',    // 'src' | 'color' | 'combine' | 'combineCoord'
-  inputs: [
-    { name: 'amount', type: 'float', default: 0.5 }
-  ],
-  glsl: `
-    vec4 myEffect(vec4 _c0, float amount) {
-      return vec4(
-        _c0.r * amount,
-        _c0.g,
-        _c0.b * (1.0 - amount),
-        _c0.a
-      );
-    }
-  `
-})
-
-// now use it like any built-in function
-osc(10, 0.1, 1).myEffect(0.7).out()
-```
-
-> Four GLSL types: `src` (coord → color), `color` (color → color), `combine` (2 colors → color), `combineCoord` (coord + texture → coord)
 
 
   </div>
@@ -1904,22 +1835,88 @@ CART398 Live Coding  | Winter 2026
 - Pre-load sources before performance starts
 - Use `o0`–`o3` to prepare parallel scenes
 - Switch with `render(o2)` without re-evaluating patches
+- Leave spaces between components (individual evaluation)
+
+> Think of `o0`–`o3` as your **VJ decks** — blend between them with `src(o1).blend(src(o0), 0.5).out()`
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+</style>
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+}
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<!-- MEDIA BEHIND (lower z-index, pointer-events disabled so clicks pass through) -->
+<div class="" style="opacity: 100%; z-index: 9; pointer-events: none; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px; pointer-events: auto;">
+    
+  </div>
+</div>
+
+
+<!-- CONTENT ON TOP (higher z-index, fully interactive) -->
+<div class="" style="position: absolute; z-index: 20; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+
 
 **Workflow:**
 ```js
-// Layer 1 — ambient base (ready in o1)
 noise(3).modulate(osc(3), 0.05).kaleid(6).out(o1)
 
 // Layer 2 — active scene (running in o0)
-osc(10, 0.1, 1).rotate(0, 0.1).out(o0)
+osc(10, 0.1, 2).rotate(0, 0.1).out(o0)
+
+// Layer 2 is a blend
+src(o0).blend(src(o1), 0.5).out(o2)
 
 // Live switch
+render(o0)   // cut to layer 0
+
 render(o1)   // cut to layer 1
-render(o0)   // cut back to layer 0
+
+render(o2)
+
 render()     // show all 4 — useful for monitoring
 ```
 
-> Think of `o0`–`o3` as your **VJ decks** — blend between them with `src(o1).blend(src(o0), 0.5).out()`
+[Switcher patch](https://vigliensoni.github.io/flok-join#targets=hydra&c0=bm9pc2UoMykubW9kdWxhdGUob3NjKDMpLCAwLjA1KS5rYWxlaWQoNikub3V0KG8xKQoKLy8gTGF5ZXIgMiDigJQgYWN0aXZlIHNjZW5lIChydW5uaW5nIGluIG8wKQpvc2MoMTAsIDAuMSwgMikucm90YXRlKDAsIDAuMSkub3V0KG8wKQoKLy8gTGF5ZXIgMiBpcyBhIGJsZW5kCnNyYyhvMCkuYmxlbmQoc3JjKG8xKSwgMC41KS5vdXQobzIpCgovLyBMaXZlIHN3aXRjaApyZW5kZXIobzApICAgLy8gY3V0IHRvIGxheWVyIDAKCnJlbmRlcihvMSkgICAvLyBjdXQgdG8gbGF5ZXIgMQoKcmVuZGVyKG8yKQoKcmVuZGVyKCkgICAgIC8vIHNob3cgYWxsIDQg4oCUIHVzZWZ1bCBmb3IgbW9uaXRvcmluZw%253D%253D)
 
 
   </div>
@@ -1978,7 +1975,6 @@ CART398 Live Coding  | Winter 2026
   <div class="slide-content">
     
 
-## Live coding etiquette & resilience
 
 **When things break:**
 ```js
@@ -1999,11 +1995,6 @@ solid(0).out(o2)
 - Use `render()` to see what's in each buffer
 
 > <mark>Never delete working code during a performance — comment it out</mark>
-
-**Transition technique:** blend between an old patch in `o1` and a new one in `o0`:
-```js
-src(o0).blend(src(o1), () => Math.sin(time) * 0.5 + 0.5).out()
-```
 
 
   </div>
@@ -2066,13 +2057,11 @@ CART398 Live Coding  | Winter 2026
 
 ## ICA 1 — External sources
 
-Task: Build a patch using one external source (camera or screen)
+Task: Build a patch using one external source of your choice (e.g., image, video, camera, or screen)
 
-Combine the external source with at least one synth generator
+Blend or modulate the external source with at least one generator
 
-Apply at least two transforms
-
-Use audio reactivity: at least one parameter driven by `a.fft[]`
+Explore audio reactivity: at least one parameter driven by `a.fft[]`
 
 
   </div>
@@ -2138,9 +2127,155 @@ Complete your attendance on Moodle
 <!-- .slide: data-auto-animate="true" -->
 
 
-## ICA 2 — Final A/V performance
+# [Final performance](https://moodle.concordia.ca/moodle/mod/assign/view.php?id=4505903&forceview=1)
 
-Teams of 3, 15 minutes preparation
+**Performance date:** April 7 — Visualization Studio  
+**Dress rehearsal:** March 31 — Visualization Studio
+
+## Teams
+
+Form a group of three. Assign roles: two people on Strudel, one on Hydra. Fill in the [sign-up spreadsheet](https://docs.google.com/spreadsheets/d/1AQA6Kc5pd2JnfIX-sxv50vC-xLsh6W5ABWXyIgsLzG4/edit?gid=1086407308#gid=1086407308) with your names and roles as soon as possible.
+
+## Performance
+
+Your set should be **10 to 15 minutes long**. Manage your time, there won't be any timer on the screen.
+
+Work on building a clear formal structure. Think in terms of sections—for example, an **A B A** arc—with identifiable shifts in texture, density, or mood. Your beginning should ease the audience in and your ending should feel intentional, not abrupt. Smooth transitions between sections matter.
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+</style>
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+}
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<!-- MEDIA BEHIND (lower z-index, pointer-events disabled so clicks pass through) -->
+<div class="" style="opacity: 100%; z-index: 9; pointer-events: none; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px; pointer-events: auto;">
+    
+  </div>
+</div>
+
+
+<!-- CONTENT ON TOP (higher z-index, fully interactive) -->
+<div class="" style="position: absolute; z-index: 20; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+# [Final performance](https://moodle.concordia.ca/moodle/mod/assign/view.php?id=4505903&forceview=1)
+
+## Rehearsal recording
+
+<mark>You must submit two **good-quality A/V recordings of your rehearsal**</mark>, one by March 31 and another by April 7. Both before class. Submit these as a link that can be watched online (public or unlisted).
+
+Do a screen capture of your computer <mark>**with the audio routed directly from the browser to the recorder**</mark>—not through a microphone. Make sure the audio is recorded at a good level (not distorted and not too quite), and both the code and the visual output are visible in the capture.
+
+## Have fun
+
+This is a performance. Own it. Take risks, listen to each other, and enjoy the set!
+
+
+
+  </div>
+</div>
+
+<style>
+/* Force left alignment */
+.slide-content, .slide-content * { text-align: left !important; }
+</style>
+
+
+<div class="" style="padding: 0 30px; box-sizing: border-box; position: absolute; left: 0%; top: 64%; height: 30%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end" align="left">
+
+<mark style="background-color:transparent; color:white; font-size:50%;">
+
+</div>
+
+
+<style>
+.horizontal_dotted_line{
+  border-bottom: 2px dotted gray;
+}
+</style>
+
+<div class="horizontal_dotted_line" style="position: absolute; left: 2.5%; top: 98%; height: 0%; width: 94%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+
+<div class="" style="padding: 20px 30px; box-sizing: border-box; position: absolute; left: 0%; top: 94%; height: 6%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<mark style="background-color:transparent; color:grey; font-size:50%; padding-top: 50px">
+CART398 Live Coding  | Winter 2026
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-opacity="0.05" data-background-image="https://media.vigliensoni.com/clips/CART398-LC/398-lc-palindrome.gif" template="" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 700px; width: 1200px; min-height: 700px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: transparent; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ 
+</div>
+
+
+<!-- MEDIA BEHIND (lower z-index, pointer-events disabled so clicks pass through) -->
+<div class="" style="opacity: 100%; z-index: 9; pointer-events: none; position: absolute; left: 25%; top: 25%; height: 50%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div style="width: 960px; height: 540px; pointer-events: auto;">
+    
+  </div>
+</div>
+
+
+<!-- CONTENT ON TOP (higher z-index, fully interactive) -->
+<div class="" style="position: absolute; z-index: 20; left: 0%; top: 0%; height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+  <div class="slide-content">
+    
+<!-- .slide: data-auto-animate="true" -->
+
+
+## ICA 2 — In-class performance
+
+Teams of 3
 
 One person doing Hydra, two people doing Strudel
 
@@ -2148,7 +2283,7 @@ Include at least one: camera/screen input, audio reactivity, or feedback loop
 
 Use `P()` to sync at least one visual parameter to the Strudel clock
 
-Deliverable: <mark>10-minute live performance</mark>
+Deliverable: <mark>6-minute live performance</mark>
 
 
 
