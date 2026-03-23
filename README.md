@@ -12,3 +12,4 @@ Website for CART398 — Live Coding
 - [Week 07](https://concordia-dcart.github.io/CART398-LC/slides/C07#/). Hydra. Sources. Transforms.
 - [Week 08](https://concordia-dcart.github.io/CART398-LC/slides/C08#/). Hydra. Modulations.
 - [Week 09](https://concordia-dcart.github.io/CART398-LC/slides/C09#/). Hydra. External sources. Audio reactivity.
+- [Week 10](https://concordia-dcart.github.io/CART398-LC/slides/C10#/). JS and live coding.
